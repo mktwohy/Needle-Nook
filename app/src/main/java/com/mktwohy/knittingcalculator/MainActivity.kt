@@ -7,12 +7,16 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,11 +27,10 @@ import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val viewModel: MainViewModel by viewModels()
         setContent {
+            val focusManager = LocalFocusManager.current
             KnittingCalculatorTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -36,7 +39,8 @@ class MainActivity : ComponentActivity() {
                         FormulaCard(
                             title = "Number of Stitches",
                             inputs = listOf(viewModel.density, viewModel.length),
-                            output = viewModel.stitchCount
+                            output = viewModel.stitchCount,
+                            onClickImeDone = { focusManager.clearFocus() }
                         )
                     }
                 }
@@ -50,6 +54,7 @@ fun FormulaCard(
     title: String,
     inputs: List<Input<String>>,
     output: String,
+    onClickImeDone: (KeyboardActionScope.() -> Unit)? = null
 ) {
     Box(
         Modifier
@@ -74,7 +79,9 @@ fun FormulaCard(
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                for (input in inputs) {
+                inputs.forEachIndexed { index, input ->
+                    val isLastInput = index == inputs.lastIndex
+
                     OutlinedTextField(
                         value = input.value,
                         onValueChange = input.onValueChange,
@@ -90,8 +97,10 @@ fun FormulaCard(
                             backgroundColor = MaterialTheme.colors.background
                         ),
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Decimal
-                        )
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = if (isLastInput) ImeAction.Done else ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onDone = onClickImeDone)
                     )
                 }
             }
