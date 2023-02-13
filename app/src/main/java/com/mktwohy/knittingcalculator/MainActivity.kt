@@ -64,11 +64,8 @@ fun FormulaCard(
     onClickImeDone: (KeyboardActionScope.() -> Unit)? = null
 ) {
     Box(
-        Modifier
-            .background(
-                color = Color.DarkGray,
-                shape = RoundedCornerShape(8.dp)
-            )
+        modifier = Modifier
+            .background(Color.DarkGray, RoundedCornerShape(8.dp))
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -87,27 +84,10 @@ fun FormulaCard(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 inputs.forEachIndexed { index, input ->
-                    val isLastInput = index == inputs.lastIndex
-
-                    OutlinedTextField(
-                        value = input.value,
-                        onValueChange = input.onValueChange,
-                        trailingIcon = {
-                            Text(
-                                text = input.unit,
-                                modifier = Modifier.padding(end = 4.dp)
-                            )
-                        },
-                        label = { Text(input.name) },
-                        placeholder = { Text(input.name) },
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = MaterialTheme.colors.background
-                        ),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Decimal,
-                            imeAction = if (isLastInput) ImeAction.Done else ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(onDone = onClickImeDone)
+                    FormulaTextField(
+                        input = input,
+                        isLastInput = index == inputs.lastIndex,
+                        onClickImeDone = onClickImeDone
                     )
                 }
             }
@@ -125,6 +105,34 @@ fun FormulaCard(
             }
         }
     }
+}
+
+@Composable
+fun FormulaTextField(
+    input: Input<String>,
+    isLastInput: Boolean,
+    onClickImeDone: (KeyboardActionScope.() -> Unit)?
+) {
+    OutlinedTextField(
+        value = input.value,
+        onValueChange = input.onValueChange,
+        trailingIcon = {
+            Text(
+                text = input.unit,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+        },
+        label = { Text(input.name) },
+        placeholder = { Text(input.name) },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = MaterialTheme.colors.background
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Decimal,
+            imeAction = if (isLastInput) ImeAction.Done else ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(onDone = onClickImeDone)
+    )
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_3A)
