@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         FormulaCard(
+                            title = "Number of Stitches",
                             inputs = listOf(viewModel.density, viewModel.length),
                             output = viewModel.stitchCount
                         )
@@ -45,6 +47,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FormulaCard(
+    title: String,
     inputs: List<Input<String>>,
     output: String,
 ) {
@@ -62,6 +65,12 @@ fun FormulaCard(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
+            Text(
+                text = title,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+            )
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -96,6 +105,7 @@ fun FormulaCard(
 fun DefaultPreview() {
     KnittingCalculatorTheme {
         FormulaCard(
+            title = "Formula Title",
             inputs = listOf(
                 Input(initValue = "0.0", name = "Input 1", unit = "Unit"),
                 Input(initValue = "", name = "Input 2", unit = "Unit"),
