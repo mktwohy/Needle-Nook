@@ -95,7 +95,18 @@ fun FormulaCard(
                     )
                 }
             }
-            Text(output)
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .width(TextFieldDefaults.MinWidth)
+                    .height(TextFieldDefaults.MinHeight)
+            ) {
+                Text(
+                    text = output,
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 }
