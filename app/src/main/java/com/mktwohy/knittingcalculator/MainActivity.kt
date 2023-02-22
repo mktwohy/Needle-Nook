@@ -4,28 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActionScope
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.mktwohy.knittingcalculator.composables.AlertDialog
 import com.mktwohy.knittingcalculator.composables.Counter
 import com.mktwohy.knittingcalculator.composables.FormulaCard
 import com.mktwohy.knittingcalculator.extensions.noRippleClickable
@@ -62,12 +48,30 @@ class MainActivity : ComponentActivity() {
                                 viewModel.count = it
                                 viewModel.saveState()
                             },
+                            onReset = {
+                                if (viewModel.count > 0) {
+                                    viewModel.showResetDialog = true
+                                }
+                            },
                             range = 0..Int.MAX_VALUE,
                             modifier = Modifier
                                 .fillMaxWidth()
                         )
                     }
                 }
+                AlertDialog(
+                    show = viewModel.showResetDialog,
+                    title = "Confirm Reset",
+                    message = "Are you sure you want to reset? Count will be lost.",
+                    confirm = "OK",
+                    dismiss = "Cancel",
+                    onConfirm = {
+                        viewModel.count = 0
+                        viewModel.saveState()
+                        viewModel.showResetDialog = false
+                    },
+                    onDismiss = { viewModel.showResetDialog = false }
+                )
             }
         }
     }

@@ -23,6 +23,7 @@ fun Counter(
     modifier: Modifier = Modifier,
     count: Int,
     onCountChange: (Int) -> Unit,
+    onReset: () -> Unit,
     range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE,
 ) {
     val itemShape = remember { RoundedCornerShape(2.dp) }
@@ -64,10 +65,8 @@ fun Counter(
             }
         }
 
-        Button(
-            onClick = { onCountChange(0) }
-        ) {
-            Text("RST")
+        Button(onClick = onReset) {
+            Text("Reset")
         }
     }
 
@@ -79,7 +78,8 @@ private fun DefaultPreview() {
     KnittingCalculatorTheme {
         Counter(
             count = 1,
-            onCountChange = { }
+            onCountChange = { },
+            onReset = { }
         )
     }
 }

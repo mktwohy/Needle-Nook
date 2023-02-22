@@ -15,6 +15,7 @@ class MainViewModel : ViewModel() {
         getStitchCount(density, length).toString()
     }
     var count by mutableStateOf(Repository.count)
+    var showResetDialog by mutableStateOf(false)
 
     fun saveState() {
         Repository.count = this.count
