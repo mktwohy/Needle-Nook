@@ -55,12 +55,16 @@ class MainActivity : ComponentActivity() {
                             output = viewModel.stitchCount,
                             onClickImeDone = { focusManager.clearFocus() }
                         )
+                        Spacer(Modifier.weight(1f)) // height and background only for demonstration
                         Counter(
                             count = viewModel.count,
                             onCountChange = {
                                 viewModel.count = it
                                 viewModel.saveState()
-                            }
+                            },
+                            range = 0..Int.MAX_VALUE,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         )
                     }
                 }

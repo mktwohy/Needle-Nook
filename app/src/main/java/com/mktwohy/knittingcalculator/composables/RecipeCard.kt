@@ -29,6 +29,7 @@ fun FormulaCard(
 ) {
     Box(
         modifier = Modifier
+            .padding(4.dp)
             .background(Color.DarkGray, RoundedCornerShape(8.dp))
     ) {
         Column(
