@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,9 +45,14 @@ fun Counter(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
-                onClick = { onCountChange((count - 1).coerceIn(range)) }
+                onClick = { onCountChange((count - 1).coerceIn(range)) },
+                modifier = Modifier
+                    .height(ButtonDefaults.MinHeight)
             ) {
-                Text(text = "-")
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = "Increment"
+                )
             }
             Box(
                 contentAlignment = Alignment.Center,
@@ -59,9 +68,14 @@ fun Counter(
                 )
             }
             Button(
-                onClick = { onCountChange((count + 1).coerceIn(range)) }
+                onClick = { onCountChange((count + 1).coerceIn(range)) },
+                modifier = Modifier
+                    .height(ButtonDefaults.MinHeight)
             ) {
-                Text(text = "+")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Increment"
+                )
             }
         }
 

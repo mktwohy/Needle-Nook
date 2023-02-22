@@ -67,4 +67,7 @@ dependencies {
 
     // Shared Preferences
     implementation 'androidx.preference:preference-ktx:1.2.0'
+
+    // Material Icons
+    implementation "androidx.compose.material:material-icons-extended:1.3.1"
 }
