@@ -34,8 +34,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.plant(Timber.DebugTree())
-        val viewModel: MainViewModel by viewModels()
+        Repository.init(this)
 
+        val viewModel: MainViewModel by viewModels()
         setContent {
             val focusManager = LocalFocusManager.current
             KnittingCalculatorTheme {
@@ -51,6 +52,13 @@ class MainActivity : ComponentActivity() {
                             inputs = listOf(viewModel.density, viewModel.length),
                             output = viewModel.stitchCount,
                             onClickImeDone = { focusManager.clearFocus() }
+                        )
+                        Counter(
+                            count = viewModel.count,
+                            onCountChange = {
+                                viewModel.count = it
+                                viewModel.saveState()
+                            }
                         )
                     }
                 }
@@ -136,6 +144,19 @@ fun FormulaTextField(
         ),
         keyboardActions = KeyboardActions(onDone = onClickImeDone)
     )
+}
+
+@Composable
+fun Counter(count: Int, onCountChange: (Int) -> Unit) {
+    Row {
+        Button(onClick = { onCountChange(count - 1) }) {
+            Text(text = "-")
+        }
+        Text(text = count.toString())
+        Button(onClick = { onCountChange(count + 1) }) {
+            Text(text = "+")
+        }
+    }
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_3A)
