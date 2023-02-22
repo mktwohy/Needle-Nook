@@ -28,11 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mktwohy.knittingcalculator.extensions.noRippleClickable
 import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
+import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.plant(Timber.DebugTree())
         val viewModel: MainViewModel by viewModels()
+
         setContent {
             val focusManager = LocalFocusManager.current
             KnittingCalculatorTheme {
