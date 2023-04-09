@@ -19,11 +19,12 @@ import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.plant(Timber.DebugTree())
 
-        val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
         setContent {
             val focusManager = LocalFocusManager.current
             KnittingCalculatorTheme {
@@ -43,10 +44,7 @@ class MainActivity : ComponentActivity() {
                         Spacer(Modifier.weight(1f)) // height and background only for demonstration
                         Counter(
                             count = viewModel.count,
-                            onCountChange = {
-                                viewModel.count = it
-                                viewModel.saveState()
-                            },
+                            onCountChange = { viewModel.count = it },
                             onReset = {
                                 if (viewModel.count > 0) {
                                     viewModel.showResetDialog = true
@@ -73,6 +71,11 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onPause() {
+        viewModel.saveState()
+        super.onPause()
     }
 }
 
