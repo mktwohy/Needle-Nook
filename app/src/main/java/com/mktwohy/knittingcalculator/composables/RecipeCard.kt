@@ -11,6 +11,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,12 +19,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mktwohy.knittingcalculator.Input
+import com.mktwohy.knittingcalculator.InputState
 
 @Composable
 fun FormulaCard(
     title: String,
-    inputs: List<Input<String>>,
+    inputStates: List<InputState<String>>,
     output: String,
     onClickImeDone: (KeyboardActionScope.() -> Unit)? = null
 ) {
@@ -48,10 +49,10 @@ fun FormulaCard(
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                inputs.forEachIndexed { index, input ->
+                inputStates.forEachIndexed { index, input ->
                     FormulaTextField(
-                        input = input,
-                        isLastInput = index == inputs.lastIndex,
+                        inputState = input,
+                        isLastInput = index == inputStates.lastIndex,
                         onClickImeDone = onClickImeDone
                     )
                 }
@@ -74,21 +75,21 @@ fun FormulaCard(
 
 @Composable
 fun FormulaTextField(
-    input: Input<String>,
+    inputState: InputState<String>,
     isLastInput: Boolean,
     onClickImeDone: (KeyboardActionScope.() -> Unit)?
 ) {
     OutlinedTextField(
-        value = input.value,
-        onValueChange = input.onValueChange,
+        value = inputState.input.collectAsState().value,
+        onValueChange = inputState.onInputChange,
         trailingIcon = {
             Text(
-                text = input.unit,
+                text = inputState.unit,
                 modifier = Modifier.padding(end = 4.dp)
             )
         },
-        label = { Text(input.name) },
-        placeholder = { Text(input.name) },
+        label = { Text(inputState.name) },
+        placeholder = { Text(inputState.name) },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = MaterialTheme.colors.background
         ),

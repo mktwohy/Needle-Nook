@@ -19,16 +19,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mktwohy.knittingcalculator.Input
 import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 @Composable
 fun Counter(
     modifier: Modifier = Modifier,
     count: Int,
-    onCountChange: (Int) -> Unit,
+    onClickIncrement: () -> Unit,
+    onClickDecrement: () -> Unit,
     onReset: () -> Unit,
-    range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE,
 ) {
     val itemShape = remember { RoundedCornerShape(2.dp) }
 
@@ -45,7 +44,7 @@ fun Counter(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
-                onClick = { onCountChange((count - 1).coerceIn(range)) },
+                onClick = onClickDecrement,
                 modifier = Modifier
                     .height(ButtonDefaults.MinHeight)
             ) {
@@ -68,7 +67,7 @@ fun Counter(
                 )
             }
             Button(
-                onClick = { onCountChange((count + 1).coerceIn(range)) },
+                onClick = onClickIncrement,
                 modifier = Modifier
                     .height(ButtonDefaults.MinHeight)
             ) {
@@ -92,7 +91,8 @@ private fun DefaultPreview() {
     KnittingCalculatorTheme {
         Counter(
             count = 1,
-            onCountChange = { },
+            onClickIncrement = { },
+            onClickDecrement = { },
             onReset = { }
         )
     }
