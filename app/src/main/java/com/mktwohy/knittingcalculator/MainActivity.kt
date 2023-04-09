@@ -22,9 +22,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.plant(Timber.DebugTree())
-        Repository.init(this)
 
-        val viewModel: MainViewModel by viewModels()
+        val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
         setContent {
             val focusManager = LocalFocusManager.current
             KnittingCalculatorTheme {
