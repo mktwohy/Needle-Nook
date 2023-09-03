@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.knittingcalculator.composables.AlertDialog
+import com.mktwohy.knittingcalculator.composables.App
 import com.mktwohy.knittingcalculator.composables.StitchCounter
 import com.mktwohy.knittingcalculator.composables.FormulaCard
 import com.mktwohy.knittingcalculator.extensions.noRippleClickable
@@ -28,36 +29,20 @@ class MainActivity : ComponentActivity() {
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            val focusManager = LocalFocusManager.current
             val count by viewModel.count.collectAsState()
             val stitchCount by viewModel.stitchCount.collectAsState(initial = "")
             val showResetDialog by viewModel.showResetDialog.collectAsState()
 
             KnittingCalculatorTheme {
-                Surface(
-                    color = MaterialTheme.colors.background,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .noRippleClickable { focusManager.clearFocus() }
-                ) {
-                    Column {
-                        FormulaCard(
-                            title = "Number of Stitches",
-                            inputStates = listOf(viewModel.density, viewModel.length),
-                            output = stitchCount,
-                            onClickImeDone = { focusManager.clearFocus() }
-                        )
-                        Spacer(Modifier.weight(1f)) // height and background only for demonstration
-                        StitchCounter(
-                            count = count,
-                            onClickDecrement = viewModel::decrementCounter,
-                            onClickIncrement = viewModel::incrementCounter,
-                            onReset = viewModel::onClickReset,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                    }
-                }
+                App(
+                    densityInput = viewModel.density,
+                    lengthInput = viewModel.length,
+                    stitchOutput = stitchCount,
+                    count = count,
+                    onClickCountIncrement = viewModel::incrementCounter,
+                    onClickCountDecrement = viewModel::decrementCounter,
+                    onClickCountReset = viewModel::onClickReset,
+                )
                 AlertDialog(
                     show = showResetDialog,
                     title = "Confirm Reset",
@@ -74,20 +59,5 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         viewModel.saveState()
         super.onPause()
-    }
-}
-
-@Preview(showBackground = true, device = Devices.PIXEL_3A)
-@Composable
-fun DefaultPreview() {
-    KnittingCalculatorTheme {
-        FormulaCard(
-            title = "Formula Title",
-            inputStates = listOf(
-                InputState(initValue = "0.0", name = "Input 1", unit = "Unit"),
-                InputState(initValue = "", name = "Input 2", unit = "Unit"),
-            ),
-            output = "3.0"
-        )
     }
 }
