@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.knittingcalculator.composables.AlertDialog
-import com.mktwohy.knittingcalculator.composables.Counter
+import com.mktwohy.knittingcalculator.composables.StitchCounter
 import com.mktwohy.knittingcalculator.composables.FormulaCard
 import com.mktwohy.knittingcalculator.extensions.noRippleClickable
 import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                             onClickImeDone = { focusManager.clearFocus() }
                         )
                         Spacer(Modifier.weight(1f)) // height and background only for demonstration
-                        Counter(
+                        StitchCounter(
                             count = count,
                             onClickDecrement = viewModel::decrementCounter,
                             onClickIncrement = viewModel::incrementCounter,
