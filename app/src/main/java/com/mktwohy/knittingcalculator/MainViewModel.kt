@@ -22,6 +22,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // TODO: use Float instead of String
     val density = InputState(initValue = "", name = "Density", unit = "Stitch/Inch")
     val length = InputState(initValue = "", name = "Length", unit = "Inch")
     val stitchCount = density.combine(length) { density, length ->
