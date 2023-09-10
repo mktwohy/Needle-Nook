@@ -39,8 +39,8 @@ class MainActivity : ComponentActivity() {
                     lengthInput = viewModel.length,
                     stitchOutput = stitchCount,
                     count = count,
-                    onClickCountIncrement = viewModel::incrementCounter,
                     onClickCountDecrement = viewModel::decrementCounter,
+                    onClickCountIncrement = viewModel::incrementCounter,
                     onClickCountReset = viewModel::onClickReset,
                 )
                 AlertDialog(

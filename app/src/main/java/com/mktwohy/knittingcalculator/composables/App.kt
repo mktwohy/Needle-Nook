@@ -43,8 +43,8 @@ fun App(
             Spacer(Modifier.weight(1f)) // height and background only for demonstration
             StitchCounter(
                 count = count,
-                onClickDecrement = onClickCountIncrement,
-                onClickIncrement = onClickCountDecrement,
+                onClickDecrement = onClickCountDecrement,
+                onClickIncrement = onClickCountIncrement,
                 onReset = onClickCountReset,
                 modifier = Modifier
                     .fillMaxWidth()
