@@ -6,10 +6,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -31,7 +33,10 @@ fun FormulaCard(
     Box(
         modifier = Modifier
             .padding(4.dp)
-            .background(Color.DarkGray, RoundedCornerShape(8.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                shape = MaterialTheme.shapes.medium
+            )
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -42,10 +47,9 @@ fun FormulaCard(
         ) {
             Text(
                 text = title,
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
+                style = MaterialTheme.typography.titleLarge
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -66,7 +70,7 @@ fun FormulaCard(
             ) {
                 Text(
                     text = output,
-                    fontSize = 18.sp
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }
@@ -82,16 +86,13 @@ fun FormulaTextField(
     OutlinedTextField(
         value = inputState.input.collectAsState().value,
         onValueChange = inputState.onInputChange,
-        trailingIcon = {
-            Text(
-                text = inputState.unit,
-                modifier = Modifier.padding(end = 4.dp)
-            )
-        },
         label = { Text(inputState.name) },
+        suffix = { Text(text = inputState.unit) },
         placeholder = { Text(inputState.name) },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = MaterialTheme.colors.background
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            disabledContainerColor = MaterialTheme.colorScheme.background,
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Decimal,

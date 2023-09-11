@@ -1,16 +1,21 @@
 package com.mktwohy.knittingcalculator.composables
 
+import android.content.res.Configuration.UI_MODE_NIGHT_MASK
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,7 +39,10 @@ fun StitchCounter(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .padding(4.dp)
-            .background(Color.DarkGray, RoundedCornerShape(8.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                shape = MaterialTheme.shapes.medium
+            )
             .padding(8.dp)
     ) {
         Counter(count, onClickIncrement, onClickDecrement)
@@ -55,7 +63,12 @@ private fun Counter(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = ButtonDefaults.shape
+            )
     ) {
         Button(
             onClick = onDecrement,
@@ -70,14 +83,13 @@ private fun Counter(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .background(Color.White, itemShape)
-                .border(1.dp, Color.Black, itemShape)
+                .background(MaterialTheme.colorScheme.tertiaryContainer, itemShape)
                 .width(ButtonDefaults.MinWidth)
                 .height(ButtonDefaults.MinHeight)
         ) {
             Text(
                 text = count.toString(),
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
         Button(
@@ -93,20 +105,17 @@ private fun Counter(
     }
 }
 
-@Preview(showBackground = true, device = Devices.PIXEL_3A)
+@Preview(name = "Dark Theme", showBackground = true, device = Devices.PIXEL_3A, uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Light Theme", showBackground = true, device = Devices.PIXEL_3A)
 @Composable
-private fun DefaultPreview() {
+private fun StitchCounterPreview() {
     KnittingCalculatorTheme {
-        Box(Modifier.fillMaxSize()) {
-            StitchCounter(
-                count = 1,
-                onClickIncrement = { },
-                onClickDecrement = { },
-                onReset = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            )
-        }
+        StitchCounter(
+            count = 1,
+            onClickIncrement = { },
+            onClickDecrement = { },
+            onReset = { },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

@@ -1,11 +1,12 @@
 package com.mktwohy.knittingcalculator.composables
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -28,7 +29,7 @@ fun App(
     val focusManager = LocalFocusManager.current
 
     Surface(
-        color = MaterialTheme.colors.background,
+        color = MaterialTheme.colorScheme.background,
         modifier = Modifier
             .fillMaxSize()
             .noRippleClickable { focusManager.clearFocus() }
@@ -53,7 +54,8 @@ fun App(
     }
 }
 
-@Preview(showBackground = true, device = Devices.PIXEL_3A)
+@Preview(name = "Light Theme", showBackground = true, device = Devices.PIXEL_3A)
+@Preview(name = "Dark Theme", showBackground = true, device = Devices.PIXEL_3A, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
     KnittingCalculatorTheme {
