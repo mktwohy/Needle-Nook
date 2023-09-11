@@ -3,7 +3,6 @@ package com.mktwohy.knittingcalculator.composables
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
@@ -21,30 +20,25 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.knittingcalculator.InputState
+import com.mktwohy.knittingcalculator.MainViewModel
+import com.mktwohy.knittingcalculator.Repository
 import com.mktwohy.knittingcalculator.extensions.noRippleClickable
 import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App(
-    densityInput: InputState<String>,
-    lengthInput: InputState<String>,
-    stitchOutput: String,
-    count: Int,
-    onClickCountIncrement: () -> Unit,
-    onClickCountDecrement: () -> Unit,
-    onClickCountReset: () -> Unit,
-) {
+fun App(viewModel: MainViewModel) {
     val focusManager = LocalFocusManager.current
     val tabItems = listOf(
         TabModel(
@@ -100,24 +94,14 @@ fun App(
                     .weight(1f)
             ) { index ->
                 when (index) {
-                    0 -> {
-                        StitchCounter(
-                            count = count,
-                            onClickDecrement = onClickCountDecrement,
-                            onClickIncrement = onClickCountIncrement,
-                            onReset = onClickCountReset,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                    }
-                    1 -> {
-                        FormulaCard(
-                            title = "Number of Stitches",
-                            inputStates = listOf(densityInput, lengthInput),
-                            output = stitchOutput,
-                            onClickImeDone = { focusManager.clearFocus() }
-                        )
-                    }
+                    0 -> ProjectScreen(
+                        count = viewModel.count.collectAsState().value,
+                        onCountDecrement = viewModel::decrementCounter,
+                        onCountIncrement = viewModel::incrementCounter,
+                        onCountReset = viewModel::onClickReset,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    1 -> FormulaScreen(viewModel, Modifier.fillMaxSize())
                     else -> error("Invalid tab/pager index: $index")
                 }
             }
@@ -125,20 +109,12 @@ fun App(
     }
 }
 
-@Preview(name = "Light Theme", showBackground = true, device = Devices.PIXEL_3A)
-@Preview(name = "Dark Theme", showBackground = true, device = Devices.PIXEL_3A, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
     KnittingCalculatorTheme {
-        App(
-            count = 0,
-            onClickCountDecrement = {},
-            onClickCountIncrement = {},
-            onClickCountReset = {},
-            densityInput = InputState(initValue = "", name = "Density", unit = "Unit"),
-            lengthInput = InputState(initValue = "", name = "Length", unit ="Unit"),
-            stitchOutput = "",
-        )
+        App(MainViewModel(repository = Repository(LocalContext.current)))
     }
 }
 

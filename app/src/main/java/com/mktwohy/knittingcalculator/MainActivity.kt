@@ -29,20 +29,10 @@ class MainActivity : ComponentActivity() {
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            val count by viewModel.count.collectAsState()
-            val stitchCount by viewModel.stitchCount.collectAsState(initial = "")
             val showResetDialog by viewModel.showResetDialog.collectAsState()
 
             KnittingCalculatorTheme {
-                App(
-                    densityInput = viewModel.density,
-                    lengthInput = viewModel.length,
-                    stitchOutput = stitchCount,
-                    count = count,
-                    onClickCountDecrement = viewModel::decrementCounter,
-                    onClickCountIncrement = viewModel::incrementCounter,
-                    onClickCountReset = viewModel::onClickReset,
-                )
+                App(viewModel)
                 AlertDialog(
                     show = showResetDialog,
                     title = "Confirm Reset",
