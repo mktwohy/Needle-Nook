@@ -11,9 +11,9 @@ android {
         applicationId "com.mktwohy.needlenook"
         minSdk 28
         targetSdk 34
-        versionCode 3
-        versionName "1.2.0"
-        setProperty "archivesBaseName", "$applicationId-v$versionCode($versionName)"
+        versionCode 1
+        versionName "0.1.0"
+        setProperty "archivesBaseName", "$needlenook-v$versionName"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
