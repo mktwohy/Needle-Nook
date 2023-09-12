@@ -24,11 +24,14 @@ import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 @Composable
 fun StitchCounter(
-    modifier: Modifier = Modifier,
     count: Int,
+    isIncrementEnabled: Boolean,
+    isDecrementEnabled: Boolean,
+    isResetEnabled: Boolean,
     onIncrement: () -> Unit,
-    onDecremenet: () -> Unit,
+    onDecrement: () -> Unit,
     onReset: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -41,8 +44,14 @@ fun StitchCounter(
             )
             .padding(8.dp)
     ) {
-        Counter(count, onIncrement, onDecremenet)
-        Button(onClick = onReset) {
+        Counter(
+            count = count,
+            onIncrement = onIncrement,
+            onDecrement = onDecrement,
+            isIncrementEnabled = isIncrementEnabled,
+            isDecrementEnabled = isDecrementEnabled
+        )
+        Button(onClick = onReset, enabled = isResetEnabled) {
             Text("Reset")
         }
     }
@@ -53,7 +62,9 @@ fun StitchCounter(
 private fun Counter(
     count: Int,
     onIncrement: () -> Unit,
-    onDecrement: () -> Unit
+    onDecrement: () -> Unit,
+    isIncrementEnabled: Boolean,
+    isDecrementEnabled: Boolean,
 ) {
     val itemShape = remember { RoundedCornerShape(2.dp) }
 
@@ -68,6 +79,7 @@ private fun Counter(
     ) {
         Button(
             onClick = onDecrement,
+            enabled = isDecrementEnabled,
             modifier = Modifier
                 .height(ButtonDefaults.MinHeight)
         ) {
@@ -90,6 +102,7 @@ private fun Counter(
         }
         Button(
             onClick = onIncrement,
+            enabled = isIncrementEnabled,
             modifier = Modifier
                 .height(ButtonDefaults.MinHeight)
         ) {
@@ -109,8 +122,11 @@ private fun StitchCounterPreview() {
         StitchCounter(
             count = 1,
             onIncrement = { },
-            onDecremenet = { },
+            onDecrement = { },
             onReset = { },
+            isIncrementEnabled = true,
+            isDecrementEnabled = true,
+            isResetEnabled = true,
             modifier = Modifier.fillMaxWidth()
         )
     }

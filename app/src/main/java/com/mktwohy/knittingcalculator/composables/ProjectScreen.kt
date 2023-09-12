@@ -4,35 +4,42 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.knittingcalculator.MainViewModel
 import com.mktwohy.knittingcalculator.Repository
 import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 @Composable
-fun ProjectScreen(
-    count: Int,
-    onCountDecrement: () -> Unit,
-    onCountIncrement: () -> Unit,
-    onCountReset: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun ProjectScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
+    val stitchCounterUiState by viewModel.stitchCounterUiState.collectAsState()
+
     Column(modifier) {
         StitchCounter(
-            count = count,
-            onDecremenet = onCountDecrement,
-            onIncrement = onCountIncrement,
-            onReset = onCountReset,
+            count = stitchCounterUiState.stitchCount,
+            onDecrement = viewModel::decrementCounter,
+            onIncrement = viewModel::incrementCounter,
+            onReset = viewModel::onClickReset,
+            isIncrementEnabled = stitchCounterUiState.isIncrementButtonEnabled,
+            isDecrementEnabled = stitchCounterUiState.isDecrementButtonEnabled,
+            isResetEnabled = stitchCounterUiState.isResetButtonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
         )
     }
+    AlertDialog(
+        show = stitchCounterUiState.showResetDialog,
+        title = "Confirm Reset",
+        message = "Are you sure you want to reset? Count will be lost.",
+        confirm = "OK",
+        dismiss = "Cancel",
+        onConfirm = viewModel::onConfirmReset,
+        onDismiss = viewModel::onCancelReset
+    )
 }
 
 @Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -41,10 +48,7 @@ fun ProjectScreen(
 private fun Preview() {
     KnittingCalculatorTheme {
         ProjectScreen(
-            count = 0,
-            onCountDecrement = { },
-            onCountIncrement = { },
-            onCountReset = { },
+            viewModel = MainViewModel(repository = Repository(LocalContext.current)),
             modifier = Modifier
                 .fillMaxSize()
         )

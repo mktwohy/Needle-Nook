@@ -22,6 +22,9 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     private val _numberOfStitchesUiState = MutableStateFlow(NumberOfStitchesFormulaUiState())
     val numberOfStitchesUiState = _numberOfStitchesUiState.asStateFlow()
 
+    private val _stitchCounterUiState = MutableStateFlow(StitchCounterUiState(stitchCount = repository.count))
+    val stitchCounterUiState = _stitchCounterUiState.asStateFlow()
+
     fun onNumberOfStitchesInputChange(index: Int, value: String) {
         _numberOfStitchesUiState.update { uiState ->
             when (index) {
@@ -32,38 +35,53 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    private val _count = MutableStateFlow(repository.count)
-    val count = _count.asStateFlow()
-
-    private val _showResetDialog = MutableStateFlow(false)
-    val showResetDialog = _showResetDialog.asStateFlow()
-
     fun incrementCounter() {
-        _count.value += 1
+        _stitchCounterUiState.update { uiState ->
+            uiState.copy(stitchCount = uiState.stitchCount + 1)
+        }
+        saveState()
     }
 
     fun decrementCounter() {
-        _count.value -= 1
+        _stitchCounterUiState.update { uiState ->
+            uiState.copy(stitchCount = uiState.stitchCount - 1)
+        }
+        saveState()
     }
 
     fun onClickReset() {
-        if (count.value > 0) {
-            _showResetDialog.value = true
+        _stitchCounterUiState.update { uiState ->
+            check(uiState.isResetButtonEnabled)
+            uiState.copy(showResetDialog = true)
         }
     }
 
     fun onConfirmReset() {
-        _count.value = 0
-        _showResetDialog.value = false
+        _stitchCounterUiState.update { uiState ->
+            check(uiState.isResetButtonEnabled)
+            uiState.copy(stitchCount = 0, showResetDialog = false)
+        }
     }
 
     fun onCancelReset() {
-        _showResetDialog.value = false
+        _stitchCounterUiState.update { uiState ->
+            check(uiState.isResetButtonEnabled)
+            uiState.copy(showResetDialog = false)
+        }
     }
 
     fun saveState() {
-        repository.count = this.count.value
+        repository.count = this.stitchCounterUiState.value.stitchCount
     }
+}
+
+data class StitchCounterUiState(
+    val stitchCount: Int = 0,
+    val showResetDialog: Boolean = false
+) {
+    val isResetButtonEnabled: Boolean = stitchCount > 0
+    val isDecrementButtonEnabled: Boolean = stitchCount > 0
+    val isIncrementButtonEnabled: Boolean = true
 }
 
 data class NumberOfStitchesFormulaUiState(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -15,9 +16,11 @@ import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 @Composable
 fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
+    val numberOfStitchesFormulaUiState by viewModel.numberOfStitchesUiState.collectAsState()
+
     Column(modifier) {
         FormulaCard(
-            uiState = viewModel.numberOfStitchesUiState.collectAsState().value,
+            uiState = numberOfStitchesFormulaUiState,
             onInputTextChange = viewModel::onNumberOfStitchesInputChange,
         )
     }

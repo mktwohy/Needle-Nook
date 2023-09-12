@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.flowWithLifecycle
 import com.mktwohy.knittingcalculator.composables.AlertDialog
 import com.mktwohy.knittingcalculator.composables.App
 import com.mktwohy.knittingcalculator.composables.StitchCounter
@@ -29,20 +30,7 @@ class MainActivity : ComponentActivity() {
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            val showResetDialog by viewModel.showResetDialog.collectAsState()
-
-            KnittingCalculatorTheme {
-                App(viewModel)
-                AlertDialog(
-                    show = showResetDialog,
-                    title = "Confirm Reset",
-                    message = "Are you sure you want to reset? Count will be lost.",
-                    confirm = "OK",
-                    dismiss = "Cancel",
-                    onConfirm = viewModel::onConfirmReset,
-                    onDismiss = viewModel::onCancelReset
-                )
-            }
+            KnittingCalculatorTheme { App(viewModel) }
         }
     }
 

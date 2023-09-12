@@ -94,13 +94,7 @@ fun App(viewModel: MainViewModel) {
                     .weight(1f)
             ) { index ->
                 when (index) {
-                    0 -> ProjectScreen(
-                        count = viewModel.count.collectAsState().value,
-                        onCountDecrement = viewModel::decrementCounter,
-                        onCountIncrement = viewModel::incrementCounter,
-                        onCountReset = viewModel::onClickReset,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    0 -> ProjectScreen(viewModel, Modifier.fillMaxSize())
                     1 -> FormulaScreen(viewModel, Modifier.fillMaxSize())
                     else -> error("Invalid tab/pager index: $index")
                 }
