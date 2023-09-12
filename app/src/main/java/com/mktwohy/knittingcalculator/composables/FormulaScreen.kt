@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -16,18 +15,12 @@ import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
 
 @Composable
 fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
-    val focusManager = LocalFocusManager.current
-    val stitchCount by viewModel.stitchCount.collectAsState(initial = "")
-
     Column(modifier) {
         FormulaCard(
-            title = "Number of Stitches",
-            inputStates = listOf(viewModel.density, viewModel.length),
-            output = stitchCount,
-            onClickImeDone = { focusManager.clearFocus() }
+            uiState = viewModel.numberOfStitchesUiState.collectAsState().value,
+            onInputTextChange = viewModel::onNumberOfStitchesInputChange,
         )
     }
-
 }
 
 @Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)

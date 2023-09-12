@@ -2,33 +2,28 @@ package com.mktwohy.knittingcalculator.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.mktwohy.knittingcalculator.InputState
+import com.mktwohy.knittingcalculator.FormulaInputUiState
+import com.mktwohy.knittingcalculator.FormulaUiState
 
 @Composable
 fun FormulaCard(
-    title: String,
-    inputStates: List<InputState<String>>,
-    output: String,
-    onClickImeDone: (KeyboardActionScope.() -> Unit)? = null
+    uiState: FormulaUiState,
+    onInputTextChange: (index: Int, value: String) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -46,18 +41,18 @@ fun FormulaCard(
                 .padding(8.dp)
         ) {
             Text(
-                text = title,
+                text = uiState.outputLabel,
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(8.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                inputStates.forEachIndexed { index, input ->
+                uiState.inputs.forEachIndexed { index, inputUiState ->
                     FormulaTextField(
-                        inputState = input,
-                        isLastInput = index == inputStates.lastIndex,
-                        onClickImeDone = onClickImeDone
+                        uiState = inputUiState,
+                        onTextChange = { onInputTextChange(index, it) },
+                        isLastInput = index == uiState.inputs.lastIndex,
                     )
                 }
             }
@@ -69,7 +64,7 @@ fun FormulaCard(
                     .height(TextFieldDefaults.MinHeight)
             ) {
                 Text(
-                    text = output,
+                    text = uiState.output,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -79,16 +74,20 @@ fun FormulaCard(
 
 @Composable
 fun FormulaTextField(
-    inputState: InputState<String>,
-    isLastInput: Boolean,
-    onClickImeDone: (KeyboardActionScope.() -> Unit)?
+    uiState: FormulaInputUiState,
+    onTextChange: (String) -> Unit,
+    isLastInput: Boolean
 ) {
+    val focusManager = LocalFocusManager.current
+
     OutlinedTextField(
-        value = inputState.input.collectAsState().value,
-        onValueChange = inputState.onInputChange,
-        label = { Text(inputState.name) },
-        suffix = { Text(text = inputState.unit) },
-        placeholder = { Text(inputState.name) },
+        value = uiState.text,
+        onValueChange = onTextChange,
+        label = { Text(uiState.label) },
+        placeholder = { Text(uiState.label) },
+        suffix = uiState.unit?.let {
+            { Text(text = it) }
+        },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.background,
             unfocusedContainerColor = MaterialTheme.colorScheme.background,
@@ -98,6 +97,6 @@ fun FormulaTextField(
             keyboardType = KeyboardType.Decimal,
             imeAction = if (isLastInput) ImeAction.Done else ImeAction.Next
         ),
-        keyboardActions = KeyboardActions(onDone = onClickImeDone)
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
     )
 }
