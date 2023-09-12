@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.mktwohy.knitkit.composables.App
-import com.mktwohy.knitkit.ui.theme.KnittingCalculatorTheme
+import com.mktwohy.knitkit.ui.theme.KnitKitTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            KnittingCalculatorTheme { App(viewModel) }
+            KnitKitTheme { App(viewModel) }
         }
     }
 

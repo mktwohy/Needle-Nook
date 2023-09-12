@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.knitkit.MainViewModel
 import com.mktwohy.knitkit.Repository
-import com.mktwohy.knitkit.ui.theme.KnittingCalculatorTheme
+import com.mktwohy.knitkit.ui.theme.KnitKitTheme
 
 @Composable
 fun ProjectScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
@@ -46,7 +46,7 @@ fun ProjectScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 @Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
-    KnittingCalculatorTheme {
+    KnitKitTheme {
         ProjectScreen(
             viewModel = MainViewModel(repository = Repository(LocalContext.current)),
             modifier = Modifier

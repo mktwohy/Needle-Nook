@@ -73,7 +73,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun KnittingCalculatorTheme(
+fun KnitKitTheme(
   useDarkTheme: Boolean = isSystemInDarkTheme(),
   content: @Composable () -> Unit
 ) {
