@@ -51,7 +51,15 @@ fun StitchCounter(
             isIncrementEnabled = isIncrementEnabled,
             isDecrementEnabled = isDecrementEnabled
         )
-        Button(onClick = onReset, enabled = isResetEnabled) {
+        Button(
+            onClick = onReset,
+            enabled = isResetEnabled,
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = ButtonDefaults.filledTonalShape)
+                .height(ButtonDefaults.MinHeight)
+        ) {
             Text("Reset")
         }
     }
@@ -120,13 +128,13 @@ private fun Counter(
 private fun StitchCounterPreview() {
     KnittingCalculatorTheme {
         StitchCounter(
-            count = 1,
+            count = 0,
             onIncrement = { },
             onDecrement = { },
             onReset = { },
             isIncrementEnabled = true,
-            isDecrementEnabled = true,
-            isResetEnabled = true,
+            isDecrementEnabled = false,
+            isResetEnabled = false,
             modifier = Modifier.fillMaxWidth()
         )
     }
