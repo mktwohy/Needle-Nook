@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit.composables
+package com.mktwohy.needlenook.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,10 +29,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.knitkit.MainViewModel
-import com.mktwohy.knitkit.Repository
-import com.mktwohy.knitkit.extensions.noRippleClickable
-import com.mktwohy.knitkit.ui.theme.KnitKitTheme
+import com.mktwohy.needlenook.MainViewModel
+import com.mktwohy.needlenook.Repository
+import com.mktwohy.needlenook.extensions.noRippleClickable
+import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -105,7 +105,7 @@ fun App(viewModel: MainViewModel) {
 @Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
-    KnitKitTheme {
+    NeedleNookTheme {
         App(MainViewModel(repository = Repository(LocalContext.current)))
     }
 }

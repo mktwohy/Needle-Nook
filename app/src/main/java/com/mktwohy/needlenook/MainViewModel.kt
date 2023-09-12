@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit
+package com.mktwohy.needlenook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,7 +14,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY]
-                MainViewModel((app as KnittingApplication).repository)
+                MainViewModel((app as NeedleNookApplication).repository)
             }
         }
     }

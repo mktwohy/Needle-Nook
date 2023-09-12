@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:name="com.mktwohy.knitkit.KnittingApplication"
+        android:name="com.mktwohy.needlenook.NeedleNookApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.KnitKit"
+        android:theme="@style/Theme.NeedleNook"
         tools:targetApi="31">
         <activity
-            android:name="com.mktwohy.knitkit.MainActivity"
+            android:name="com.mktwohy.needlenook.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.KnitKit">
+            android:theme="@style/Theme.NeedleNook">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

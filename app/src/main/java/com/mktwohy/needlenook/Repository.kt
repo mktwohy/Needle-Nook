@@ -1,9 +1,9 @@
-package com.mktwohy.knitkit
+package com.mktwohy.needlenook
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.mktwohy.knitkit.extensions.delegate
+import com.mktwohy.needlenook.extensions.delegate
 
 class Repository(context: Context) {
     private val sharedPreferences: SharedPreferences =

@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit
+package com.mktwohy.needlenook
 
 import org.junit.Test
 

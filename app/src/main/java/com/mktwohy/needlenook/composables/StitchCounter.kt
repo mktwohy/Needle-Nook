@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit.composables
+package com.mktwohy.needlenook.composables
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mktwohy.knitkit.ui.theme.KnitKitTheme
+import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @Composable
 fun StitchCounter(
@@ -132,7 +132,7 @@ private fun Counter(
 @Preview(name = "Light Theme", showBackground = true, device = Devices.PIXEL_3A)
 @Composable
 private fun StitchCounterPreview() {
-    KnitKitTheme {
+    NeedleNookTheme {
         StitchCounter(
             count = 0,
             onIncrement = { },

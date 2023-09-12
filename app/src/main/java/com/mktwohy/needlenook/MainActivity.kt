@@ -1,11 +1,11 @@
-package com.mktwohy.knitkit
+package com.mktwohy.needlenook
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.mktwohy.knitkit.composables.App
-import com.mktwohy.knitkit.ui.theme.KnitKitTheme
+import com.mktwohy.needlenook.composables.App
+import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            KnitKitTheme { App(viewModel) }
+            NeedleNookTheme { App(viewModel) }
         }
     }
 

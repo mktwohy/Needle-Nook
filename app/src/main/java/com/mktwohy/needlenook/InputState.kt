@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit
+package com.mktwohy.needlenook
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

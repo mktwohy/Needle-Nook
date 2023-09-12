@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit.composables
+package com.mktwohy.needlenook.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -9,9 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.knitkit.MainViewModel
-import com.mktwohy.knitkit.Repository
-import com.mktwohy.knitkit.ui.theme.KnitKitTheme
+import com.mktwohy.needlenook.MainViewModel
+import com.mktwohy.needlenook.Repository
+import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @Composable
 fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
@@ -29,7 +29,7 @@ fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 @Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
-    KnitKitTheme {
+    NeedleNookTheme {
         FormulaScreen(
             viewModel = MainViewModel(repository = Repository(LocalContext.current)),
             modifier = Modifier.fillMaxSize()

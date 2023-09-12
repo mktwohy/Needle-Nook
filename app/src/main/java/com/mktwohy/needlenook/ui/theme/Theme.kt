@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit.ui.theme
+package com.mktwohy.needlenook.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -73,7 +73,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun KnitKitTheme(
+fun NeedleNookTheme(
   useDarkTheme: Boolean = isSystemInDarkTheme(),
   content: @Composable () -> Unit
 ) {

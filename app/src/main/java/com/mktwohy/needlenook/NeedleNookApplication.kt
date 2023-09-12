@@ -1,7 +1,7 @@
-package com.mktwohy.knitkit
+package com.mktwohy.needlenook
 
 import android.app.Application
 
-class KnittingApplication : Application() {
+class NeedleNookApplication : Application() {
     val repository: Repository by lazy { Repository(this) }
 }

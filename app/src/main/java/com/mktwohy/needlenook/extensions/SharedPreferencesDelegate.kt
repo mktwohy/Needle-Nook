@@ -1,4 +1,4 @@
-package com.mktwohy.knitkit.extensions
+package com.mktwohy.needlenook.extensions
 
 import android.content.SharedPreferences
 import kotlin.properties.ReadWriteProperty
