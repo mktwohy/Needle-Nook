@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.composables
+package com.mktwohy.knitkit.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -10,9 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.knittingcalculator.MainViewModel
-import com.mktwohy.knittingcalculator.Repository
-import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
+import com.mktwohy.knitkit.MainViewModel
+import com.mktwohy.knitkit.Repository
+import com.mktwohy.knitkit.ui.theme.KnittingCalculatorTheme
 
 @Composable
 fun ProjectScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {

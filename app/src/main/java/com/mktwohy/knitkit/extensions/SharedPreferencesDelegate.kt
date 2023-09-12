@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.extensions
+package com.mktwohy.knitkit.extensions
 
 import android.content.SharedPreferences
 import kotlin.properties.ReadWriteProperty

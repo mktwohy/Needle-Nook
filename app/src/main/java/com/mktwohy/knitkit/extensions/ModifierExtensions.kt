@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.extensions
+package com.mktwohy.knitkit.extensions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

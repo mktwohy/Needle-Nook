@@ -1,9 +1,9 @@
-package com.mktwohy.knittingcalculator
+package com.mktwohy.knitkit
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.mktwohy.knittingcalculator.extensions.delegate
+import com.mktwohy.knitkit.extensions.delegate
 
 class Repository(context: Context) {
     private val sharedPreferences: SharedPreferences =

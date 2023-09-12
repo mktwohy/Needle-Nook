@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator
+package com.mktwohy.knitkit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

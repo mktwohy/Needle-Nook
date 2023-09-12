@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.composables
+package com.mktwohy.knitkit.composables
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
+import com.mktwohy.knitkit.ui.theme.KnittingCalculatorTheme
 
 @Composable
 fun StitchCounter(

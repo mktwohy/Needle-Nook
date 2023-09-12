@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.ui.theme
+package com.mktwohy.knitkit.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

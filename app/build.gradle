@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.mktwohy.knittingcalculator'
+    namespace 'com.mktwohy.knitkit'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.mktwohy.knittingcalculator"
+        applicationId "com.mktwohy.knitkit"
         minSdk 28
         targetSdk 34
         versionCode 2

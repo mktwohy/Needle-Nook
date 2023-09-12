@@ -1,11 +1,11 @@
-package com.mktwohy.knittingcalculator
+package com.mktwohy.knitkit
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.mktwohy.knittingcalculator.composables.App
-import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
+import com.mktwohy.knitkit.composables.App
+import com.mktwohy.knitkit.ui.theme.KnittingCalculatorTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {

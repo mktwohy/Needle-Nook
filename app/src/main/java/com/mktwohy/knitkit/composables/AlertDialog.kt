@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.composables
+package com.mktwohy.knitkit.composables
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

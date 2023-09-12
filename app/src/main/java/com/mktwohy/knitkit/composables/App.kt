@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.composables
+package com.mktwohy.knitkit.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,10 +29,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.knittingcalculator.MainViewModel
-import com.mktwohy.knittingcalculator.Repository
-import com.mktwohy.knittingcalculator.extensions.noRippleClickable
-import com.mktwohy.knittingcalculator.ui.theme.KnittingCalculatorTheme
+import com.mktwohy.knitkit.MainViewModel
+import com.mktwohy.knitkit.Repository
+import com.mktwohy.knitkit.extensions.noRippleClickable
+import com.mktwohy.knitkit.ui.theme.KnittingCalculatorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

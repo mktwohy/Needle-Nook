@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator
+package com.mktwohy.knitkit
 
 import android.app.Application
 

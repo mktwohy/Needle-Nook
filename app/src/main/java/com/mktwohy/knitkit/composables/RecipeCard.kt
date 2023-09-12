@@ -1,4 +1,4 @@
-package com.mktwohy.knittingcalculator.composables
+package com.mktwohy.knitkit.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +24,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.mktwohy.knittingcalculator.FormulaInputUiState
-import com.mktwohy.knittingcalculator.FormulaUiState
+import com.mktwohy.knitkit.FormulaInputUiState
+import com.mktwohy.knitkit.FormulaUiState
 
 @Composable
 fun FormulaCard(
