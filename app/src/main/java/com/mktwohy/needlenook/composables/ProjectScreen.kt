@@ -11,46 +11,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.needlenook.MainViewModel
+import com.mktwohy.needlenook.ProjectDao
+import com.mktwohy.needlenook.ProjectScreenViewModel
 import com.mktwohy.needlenook.Repository
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @Composable
-fun ProjectScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
-    val stitchCounterUiState by viewModel.stitchCounterUiState.collectAsState()
+fun ProjectScreen(viewModel: ProjectScreenViewModel, modifier: Modifier = Modifier) {
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(modifier) {
-        StitchCounter(
-            count = stitchCounterUiState.stitchCount,
-            onDecrement = viewModel::decrementCounter,
-            onIncrement = viewModel::incrementCounter,
-            onReset = viewModel::onClickReset,
-            isIncrementEnabled = stitchCounterUiState.isIncrementButtonEnabled,
-            isDecrementEnabled = stitchCounterUiState.isDecrementButtonEnabled,
-            isResetEnabled = stitchCounterUiState.isResetButtonEnabled,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+        val project = uiState.selectedProject
+        if (project != null) {
+            StitchCounter(
+                count = project.stitchCount,
+                onIncrement = viewModel::incrementStitchCount,
+                onDecrement = viewModel::decrementStitchCount,
+                onReset = viewModel::showResetDialog,
+                isIncrementEnabled = uiState.incrementStitchCountIsEnabled,
+                isDecrementEnabled = uiState.decrementStitchCountIsEnabled,
+                isResetEnabled = uiState.resetButtonIsEnabled,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
     AlertDialog(
-        show = stitchCounterUiState.showResetDialog,
+        show = uiState.showResetDialog,
         title = "Confirm Reset",
         message = "Are you sure you want to reset? Count will be lost.",
         confirm = "OK",
         dismiss = "Cancel",
-        onConfirm = viewModel::onConfirmReset,
-        onDismiss = viewModel::onCancelReset
+        onConfirm = viewModel::resetStitchCount,
+        onDismiss = viewModel::hideResetDialog
     )
 }
 
-@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun Preview() {
-    NeedleNookTheme {
-        ProjectScreen(
-            viewModel = MainViewModel(repository = Repository(LocalContext.current)),
-            modifier = Modifier
-                .fillMaxSize()
-        )
-    }
-}
+//@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+//@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//private fun Preview() {
+//    NeedleNookTheme {
+//        ProjectScreen(
+//            viewModel = ProjectScreenViewModel,
+//            modifier = Modifier
+//                .fillMaxSize()
+//        )
+//    }
+//}

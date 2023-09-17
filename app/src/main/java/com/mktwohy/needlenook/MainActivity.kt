@@ -10,6 +10,7 @@ import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
     private val repository: Repository by application { repository }
+    private val projectScreenViewModel: ProjectScreenViewModel by viewModels { ProjectScreenViewModel.Factory }
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            NeedleNookTheme { App(viewModel) }
+            NeedleNookTheme { App(projectScreenViewModel, viewModel) }
         }
     }
 

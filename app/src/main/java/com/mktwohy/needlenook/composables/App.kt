@@ -30,13 +30,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.needlenook.MainViewModel
+import com.mktwohy.needlenook.ProjectScreenViewModel
 import com.mktwohy.needlenook.Repository
 import com.mktwohy.needlenook.extensions.noRippleClickable
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App(viewModel: MainViewModel) {
+fun App(projectScreenViewModel: ProjectScreenViewModel, viewModel: MainViewModel) {
     val focusManager = LocalFocusManager.current
     val tabItems = listOf(
         TabModel(
@@ -92,7 +93,7 @@ fun App(viewModel: MainViewModel) {
                     .weight(1f)
             ) { index ->
                 when (index) {
-                    0 -> ProjectScreen(viewModel, Modifier.fillMaxSize())
+                    0 -> ProjectScreen(projectScreenViewModel, Modifier.fillMaxSize())
                     1 -> FormulaScreen(viewModel, Modifier.fillMaxSize())
                     else -> error("Invalid tab/pager index: $index")
                 }
@@ -101,14 +102,14 @@ fun App(viewModel: MainViewModel) {
     }
 }
 
-@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun Preview() {
-    NeedleNookTheme {
-        App(MainViewModel(repository = Repository(LocalContext.current)))
-    }
-}
+//@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+//@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//private fun Preview() {
+//    NeedleNookTheme {
+//        App(MainViewModel(repository = Repository(LocalContext.current)))
+//    }
+//}
 
 data class TabModel(
     val title: String,
