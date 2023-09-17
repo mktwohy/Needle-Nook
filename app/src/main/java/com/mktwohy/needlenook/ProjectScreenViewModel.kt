@@ -12,8 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
 class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
@@ -35,13 +37,15 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
         )
 
     private val _uiState = MutableStateFlow(ProjectScreenUiState())
-    val uiState = combine(_uiState, _projects) { uiState, projects ->
-        uiState.copy(projects = projects)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5.seconds),
-        initialValue = ProjectScreenUiState()
-    )
+    val uiState = _uiState
+        .combine(_projects) { uiState, projects ->
+            uiState.copy(projects = projects)
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5.seconds),
+            initialValue = ProjectScreenUiState()
+        )
 
     suspend fun addProject(name: String) {
         dao.insertProject(Project(name))
@@ -54,10 +58,17 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
     }
 
     fun selectProject(project: Project) {
+        val projects = _projects.value
         _uiState.update { uiState ->
-            check(project in uiState.projects)
+            check(project in projects)
 
-            uiState.copy(selectedProjectIndex = uiState.projects.indexOf(project))
+            uiState.copy(selectedProjectIndex = projects.indexOf(project))
+        }
+    }
+
+    fun renameSelectedProject(newName: String) {
+        updateSelectedProject {
+            it.copy(name = newName)
         }
     }
 

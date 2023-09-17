@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.mktwohy.needlenook.composables.App
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
-    private val repository: Repository by application { repository }
     private val projectScreenViewModel: ProjectScreenViewModel by viewModels { ProjectScreenViewModel.Factory }
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
 
