@@ -55,6 +55,7 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
             is ProjectScreenUiEvent.RemoveProject -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     dao.deleteProject(event.project)
+                    onEvent(ProjectScreenUiEvent.HideDialog)
                 }
             }
             is ProjectScreenUiEvent.SelectProject -> {
@@ -91,27 +92,17 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
                     val selectedProject = uiState.value.selectedProject
                     checkNotNull(selectedProject)
                     dao.updateProject(selectedProject.copy(stitchCount = 0))
-                    onEvent(ProjectScreenUiEvent.HideResetDialog)
+                    onEvent(ProjectScreenUiEvent.HideDialog)
                 }
             }
-            is ProjectScreenUiEvent.ShowResetDialog -> {
+            is ProjectScreenUiEvent.ShowDialog -> {
                 _uiState.update { uiState ->
-                    uiState.copy(showResetDialog = true)
+                    uiState.copy(dialog = event.dialog)
                 }
             }
-            is ProjectScreenUiEvent.HideResetDialog -> {
+            is ProjectScreenUiEvent.HideDialog -> {
                 _uiState.update { uiState ->
-                    uiState.copy(showResetDialog = false)
-                }
-            }
-            is ProjectScreenUiEvent.ShowRemoveProjectDialog -> {
-                _uiState.update { uiState ->
-                    uiState.copy(showRemoveProjectDialog = true)
-                }
-            }
-            is ProjectScreenUiEvent.HideRemoveProjectDialog -> {
-                _uiState.update { uiState ->
-                    uiState.copy(showRemoveProjectDialog = false)
+                    uiState.copy(dialog = null)
                 }
             }
         }
@@ -121,14 +112,18 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
 data class ProjectScreenUiState(
     val projects: List<Project> = emptyList(),
     val selectedProjectIndex: Int = 0,
-    val showResetDialog: Boolean = false,
-    val showRemoveProjectDialog: Boolean = false
+    val dialog: ProjectScreenDialog? = null
 ) {
     val selectedProject: Project? = projects.getOrNull(selectedProjectIndex)
     val stitchCount: Int? = selectedProject?.stitchCount
     val decrementStitchCountIsEnabled: Boolean = stitchCount != null && stitchCount > 0
     val incrementStitchCountIsEnabled: Boolean = true
     val resetButtonIsEnabled: Boolean = stitchCount != null && stitchCount > 0
+}
+
+sealed interface ProjectScreenDialog {
+    data object ResetDialog : ProjectScreenDialog
+    data class RemoveProject(val project: Project) : ProjectScreenDialog
 }
 
 sealed interface ProjectScreenUiEvent {
@@ -139,8 +134,6 @@ sealed interface ProjectScreenUiEvent {
     data object IncrementStitchCounter : ProjectScreenUiEvent
     data object DecrementStitchCounter : ProjectScreenUiEvent
     data object ResetStitchCounter : ProjectScreenUiEvent
-    data object ShowResetDialog : ProjectScreenUiEvent
-    data object HideResetDialog : ProjectScreenUiEvent
-    data object ShowRemoveProjectDialog : ProjectScreenUiEvent
-    data object HideRemoveProjectDialog : ProjectScreenUiEvent
+    data class ShowDialog(val dialog: ProjectScreenDialog) : ProjectScreenUiEvent
+    data object HideDialog : ProjectScreenUiEvent
 }

@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.mktwohy.needlenook.Project
+import com.mktwohy.needlenook.ProjectScreenDialog
 import com.mktwohy.needlenook.ProjectScreenUiEvent
 import com.mktwohy.needlenook.ProjectScreenUiState
 import com.mktwohy.needlenook.ProjectScreenViewModel
@@ -68,7 +69,10 @@ fun ProjectScreen(
                     count = selectedProject.stitchCount,
                     onIncrement = { onEvent(ProjectScreenUiEvent.IncrementStitchCounter) },
                     onDecrement = { onEvent(ProjectScreenUiEvent.DecrementStitchCounter) },
-                    onReset = { onEvent(ProjectScreenUiEvent.ShowResetDialog) },
+                    onReset = {
+                        val dialog = ProjectScreenDialog.ResetDialog
+                        onEvent(ProjectScreenUiEvent.ShowDialog(dialog))
+                    },
                     isIncrementEnabled = uiState.incrementStitchCountIsEnabled,
                     isDecrementEnabled = uiState.decrementStitchCountIsEnabled,
                     isResetEnabled = uiState.resetButtonIsEnabled,
@@ -78,24 +82,34 @@ fun ProjectScreen(
             }
         }
     }
-    AlertDialog(
-        show = uiState.showResetDialog,
-        title = "Confirm Reset",
-        message = "Are you sure you want to reset? Count will be lost.",
-        confirm = "OK",
-        dismiss = "Cancel",
-        onConfirm = { onEvent(ProjectScreenUiEvent.ResetStitchCounter) },
-        onDismiss = { onEvent(ProjectScreenUiEvent.HideResetDialog) }
-    )
-//    AlertDialog(
-//        show = uiState.showRemoveProjectDialog,
-//        title = "Confirm Remove",
-//        message = "Are you sure you want to remove ${uiState.selectedProject!!.name}?",
-//        confirm = "OK",
-//        dismiss = "Cancel",
-//        onConfirm = { onEvent(ProjectScreenUiEvent.RemoveProject(uiState.)) },
-//        onDismiss = { onEvent(ProjectScreenUiEvent.HideResetDialog) }
-//    )
+    when (uiState.dialog) {
+        is ProjectScreenDialog.ResetDialog -> {
+            AlertDialog(
+                show = true,
+                title = "Confirm Reset",
+                message = "Are you sure you want to reset? Count will be lost.",
+                confirm = "OK",
+                dismiss = "Cancel",
+                onConfirm = { onEvent(ProjectScreenUiEvent.ResetStitchCounter) },
+                onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
+            )
+        }
+        is ProjectScreenDialog.RemoveProject -> {
+            val project = uiState.dialog.project
+            AlertDialog(
+                show = true,
+                title = "Confirm Remove",
+                message = "Are you sure you want to remove \"${project.name}\"?",
+                confirm = "Remove",
+                dismiss = "Cancel",
+                onConfirm = { onEvent(ProjectScreenUiEvent.RemoveProject(project)) },
+                onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
+            )
+        }
+        null -> {
+
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,7 +146,8 @@ fun ProjectDropdownMenu(
                     text = { Text(text = project.name) },
                     trailingIcon = {
                         IconButton(onClick = {
-                            onEvent(ProjectScreenUiEvent.RemoveProject(project))
+                            val dialog = ProjectScreenDialog.RemoveProject(project)
+                            onEvent(ProjectScreenUiEvent.ShowDialog(dialog))
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
