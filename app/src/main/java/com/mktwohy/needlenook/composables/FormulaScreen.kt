@@ -7,13 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.needlenook.MainViewModel
+import com.mktwohy.needlenook.FormulaScreenViewModel
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @Composable
-fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
+fun FormulaScreen(viewModel: FormulaScreenViewModel, modifier: Modifier = Modifier) {
     val numberOfStitchesFormulaUiState by viewModel.numberOfStitchesUiState.collectAsState()
 
     Column(modifier) {
@@ -30,7 +29,7 @@ fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 private fun Preview() {
     NeedleNookTheme {
         FormulaScreen(
-            viewModel = MainViewModel(),
+            viewModel = FormulaScreenViewModel(),
             modifier = Modifier.fillMaxSize()
         )
     }

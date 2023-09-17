@@ -1,6 +1,5 @@
 package com.mktwohy.needlenook.composables
 
-import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,17 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.needlenook.MainViewModel
+import com.mktwohy.needlenook.FormulaScreenViewModel
 import com.mktwohy.needlenook.ProjectScreenViewModel
 import com.mktwohy.needlenook.extensions.noRippleClickable
-import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App(projectScreenViewModel: ProjectScreenViewModel, viewModel: MainViewModel) {
+fun App(projectScreenViewModel: ProjectScreenViewModel, formulaScreenViewModel: FormulaScreenViewModel) {
     val focusManager = LocalFocusManager.current
     val tabItems = listOf(
         TabModel(
@@ -98,7 +94,7 @@ fun App(projectScreenViewModel: ProjectScreenViewModel, viewModel: MainViewModel
                         onEvent = projectScreenViewModel::onEvent,
                         modifier = Modifier.fillMaxSize()
                     )
-                    1 -> FormulaScreen(viewModel, Modifier.fillMaxSize())
+                    1 -> FormulaScreen(formulaScreenViewModel, Modifier.fillMaxSize())
                     else -> error("Invalid tab/pager index: $index")
                 }
             }
