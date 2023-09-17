@@ -34,6 +34,7 @@ interface ProjectDao {
     fun getProjectsOrderedByName(): Flow<List<Project>>
 }
 
+// TODO add date created
 @Entity
 data class Project(
     val name: String,
