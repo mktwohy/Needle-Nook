@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.needlenook.MainViewModel
-import com.mktwohy.needlenook.Repository
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @Composable
@@ -31,7 +30,7 @@ fun FormulaScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 private fun Preview() {
     NeedleNookTheme {
         FormulaScreen(
-            viewModel = MainViewModel(repository = Repository(LocalContext.current)),
+            viewModel = MainViewModel(),
             modifier = Modifier.fillMaxSize()
         )
     }

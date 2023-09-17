@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.needlenook.MainViewModel
 import com.mktwohy.needlenook.ProjectScreenViewModel
-import com.mktwohy.needlenook.Repository
 import com.mktwohy.needlenook.extensions.noRippleClickable
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 

@@ -5,7 +5,6 @@ import android.app.Application
 import com.mktwohy.needlenook.extensions.roomDatabase
 
 class NeedleNookApplication : Application() {
-    val repository: Repository by lazy { Repository(this) }
     val database by lazy { roomDatabase<ProjectDatabase>("projects.db").build() }
 }
 
