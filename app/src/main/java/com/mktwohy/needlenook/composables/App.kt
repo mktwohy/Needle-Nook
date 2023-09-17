@@ -20,6 +20,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -93,7 +94,11 @@ fun App(projectScreenViewModel: ProjectScreenViewModel, viewModel: MainViewModel
                     .weight(1f)
             ) { index ->
                 when (index) {
-                    0 -> ProjectScreen(projectScreenViewModel, Modifier.fillMaxSize())
+                    0 -> ProjectScreen(
+                        uiState = projectScreenViewModel.uiState.collectAsState().value,
+                        onEvent = projectScreenViewModel::onEvent,
+                        modifier = Modifier.fillMaxSize()
+                    )
                     1 -> FormulaScreen(viewModel, Modifier.fillMaxSize())
                     else -> error("Invalid tab/pager index: $index")
                 }

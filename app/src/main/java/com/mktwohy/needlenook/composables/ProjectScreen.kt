@@ -23,23 +23,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.mktwohy.needlenook.Project
+import com.mktwohy.needlenook.ProjectScreenUiEvent
 import com.mktwohy.needlenook.ProjectScreenUiState
 import com.mktwohy.needlenook.ProjectScreenViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
-fun ProjectScreen(viewModel: ProjectScreenViewModel, modifier: Modifier = Modifier) {
-    val uiState by viewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
-
+fun ProjectScreen(
+    uiState: ProjectScreenUiState,
+    onEvent: (ProjectScreenUiEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    scope.launch {
-                        viewModel.addProject("My Project ${uiState.projects.lastIndex + 1}")
-                    }
+                    onEvent(ProjectScreenUiEvent.RenameSelectedProject("My Project ${uiState.projects.lastIndex + 1}"))
                 },
                 content = {
                     Icon(
@@ -55,16 +55,16 @@ fun ProjectScreen(viewModel: ProjectScreenViewModel, modifier: Modifier = Modifi
             ProjectDropdownMenu(
                 uiState = uiState,
                 onSelectedProjectNameChange = {  },
-                onSelectProject = viewModel::selectProject
+                onSelectProject = { onEvent(ProjectScreenUiEvent.SelectProject(it)) }
             )
 
             val selectedProject = uiState.selectedProject
             if (selectedProject != null) {
                 StitchCounter(
                     count = selectedProject.stitchCount,
-                    onIncrement = viewModel::incrementStitchCount,
-                    onDecrement = viewModel::decrementStitchCount,
-                    onReset = viewModel::showResetDialog,
+                    onIncrement = { onEvent(ProjectScreenUiEvent.IncrementStitchCounter) },
+                    onDecrement = { onEvent(ProjectScreenUiEvent.DecrementStitchCounter) },
+                    onReset = { onEvent(ProjectScreenUiEvent.ShowResetDialog) },
                     isIncrementEnabled = uiState.incrementStitchCountIsEnabled,
                     isDecrementEnabled = uiState.decrementStitchCountIsEnabled,
                     isResetEnabled = uiState.resetButtonIsEnabled,
@@ -80,8 +80,8 @@ fun ProjectScreen(viewModel: ProjectScreenViewModel, modifier: Modifier = Modifi
         message = "Are you sure you want to reset? Count will be lost.",
         confirm = "OK",
         dismiss = "Cancel",
-        onConfirm = viewModel::resetStitchCount,
-        onDismiss = viewModel::hideResetDialog
+        onConfirm = { onEvent(ProjectScreenUiEvent.ResetStitchCounter) },
+        onDismiss = { onEvent(ProjectScreenUiEvent.HideResetDialog) }
     )
 }
 

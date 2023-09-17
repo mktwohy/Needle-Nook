@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mktwohy.needlenook.extensions.mutate
 import com.mktwohy.needlenook.extensions.replaceIf
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
@@ -47,73 +49,65 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
             initialValue = ProjectScreenUiState()
         )
 
-    suspend fun addProject(name: String) {
-        dao.insertProject(Project(name))
-    }
-
-    suspend fun removeProject(project: Project) {
-        check(project in _projects.value)
-
-        dao.deleteProject(project)
-    }
-
-    fun selectProject(project: Project) {
-        val projects = _projects.value
-        _uiState.update { uiState ->
-            check(project in projects)
-
-            uiState.copy(selectedProjectIndex = projects.indexOf(project))
-        }
-    }
-
-    fun renameSelectedProject(newName: String) {
-        updateSelectedProject {
-            it.copy(name = newName)
-        }
-    }
-
-    fun incrementStitchCount() {
-        updateSelectedProject { project ->
-            project.copy(stitchCount = project.stitchCount + 1)
-        }
-    }
-
-    fun decrementStitchCount() {
-        updateSelectedProject { project ->
-            project.copy(stitchCount = project.stitchCount - 1)
-        }
-    }
-
-    fun resetStitchCount() {
-        updateSelectedProject { project ->
-            project.copy(stitchCount = 0)
-        }
-    }
-
-    fun showResetDialog() {
-        _uiState.update { uiState ->
-            uiState.copy(showResetDialog = true)
-        }
-    }
-
-    fun hideResetDialog() {
-        _uiState.update { uiState ->
-            uiState.copy(showResetDialog = true)
-        }
-    }
-
-    private inline fun updateSelectedProject(
-        crossinline transform: (Project) -> Project
-    ) {
-        _uiState.update { uiState ->
-            uiState.copy(
-                projects = uiState.projects.mutate {
-                    replaceIf(
-                        predicate = { it == uiState.selectedProject },
-                        transform = transform
-                    )
+    fun onEvent(event: ProjectScreenUiEvent) {
+        when (event) {
+            is ProjectScreenUiEvent.AddProject -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    dao.insertProject(Project(event.name))
                 }
-            )
+            }
+            is ProjectScreenUiEvent.RemoveProject -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    dao.deleteProject(Project(event.name))
+                }
+            }
+            is ProjectScreenUiEvent.SelectProject -> {
+                val projects = _projects.value
+                _uiState.update { uiState ->
+                    check(event.project in projects)
+
+                    uiState.copy(selectedProjectIndex = projects.indexOf(event.project))
+                }
+            }
+            is ProjectScreenUiEvent.RenameSelectedProject -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val selectedProject = _uiState.value.selectedProject
+                    checkNotNull(selectedProject)
+                    dao.updateProject(selectedProject.copy(name = event.name))
+                }
+            }
+            is ProjectScreenUiEvent.IncrementStitchCounter -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val selectedProject = uiState.value.selectedProject
+                    checkNotNull(selectedProject)
+                    dao.updateProject(selectedProject.copy(stitchCount = selectedProject.stitchCount + 1))
+                }
+            }
+            is ProjectScreenUiEvent.DecrementStitchCounter -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val selectedProject = uiState.value.selectedProject
+                    checkNotNull(selectedProject)
+                    dao.updateProject(selectedProject.copy(stitchCount = selectedProject.stitchCount - 1))
+                }
+            }
+            is ProjectScreenUiEvent.ResetStitchCounter -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val selectedProject = uiState.value.selectedProject
+                    checkNotNull(selectedProject)
+                    dao.updateProject(selectedProject.copy(stitchCount = 0))
+                    onEvent(ProjectScreenUiEvent.HideResetDialog)
+                }
+            }
+            is ProjectScreenUiEvent.ShowResetDialog -> {
+                _uiState.update { uiState ->
+                    uiState.copy(showResetDialog = true)
+                }
+            }
+            is ProjectScreenUiEvent.HideResetDialog -> {
+                _uiState.update { uiState ->
+                    uiState.copy(showResetDialog = false)
+                }
+            }
         }
     }
 }
@@ -128,4 +122,16 @@ data class ProjectScreenUiState(
     val decrementStitchCountIsEnabled: Boolean = stitchCount != null && stitchCount > 0
     val incrementStitchCountIsEnabled: Boolean = true
     val resetButtonIsEnabled: Boolean = stitchCount != null && stitchCount > 0
+}
+
+sealed interface ProjectScreenUiEvent {
+    data class AddProject(val name: String) : ProjectScreenUiEvent
+    data class RemoveProject(val name: String) : ProjectScreenUiEvent
+    data class SelectProject(val project: Project) : ProjectScreenUiEvent
+    data class RenameSelectedProject(val name: String) : ProjectScreenUiEvent
+    data object IncrementStitchCounter : ProjectScreenUiEvent
+    data object DecrementStitchCounter : ProjectScreenUiEvent
+    data object ResetStitchCounter : ProjectScreenUiEvent
+    data object HideResetDialog : ProjectScreenUiEvent
+    data object ShowResetDialog : ProjectScreenUiEvent
 }
