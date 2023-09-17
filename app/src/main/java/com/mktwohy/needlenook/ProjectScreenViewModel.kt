@@ -50,6 +50,7 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
             is ProjectScreenUiEvent.AddProject -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     dao.insertProject(Project(event.name))
+                    onEvent(ProjectScreenUiEvent.HideDialog)
                 }
             }
             is ProjectScreenUiEvent.RemoveProject -> {
@@ -123,6 +124,7 @@ data class ProjectScreenUiState(
 
 sealed interface ProjectScreenDialog {
     data object ResetDialog : ProjectScreenDialog
+    data object AddProject : ProjectScreenDialog
     data class RemoveProject(val project: Project) : ProjectScreenDialog
 }
 

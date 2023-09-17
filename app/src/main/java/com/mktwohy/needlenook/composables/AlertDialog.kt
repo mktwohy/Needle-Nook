@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun AlertDialog(
-    show: Boolean,
     title: String,
     message: String,
     confirm: String,
@@ -17,26 +16,48 @@ fun AlertDialog(
     onDismiss: () -> Unit,
     cancelable: Boolean = true
 ) {
-    if (show) {
-        AlertDialog(
-            title = { Text(title) },
-            text = { Text(message) },
-            confirmButton = {
-                Button(
-                    onClick = onConfirm,
-                ) {
-                    Text(text = confirm)
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = onDismiss
-                ) {
-                    Text(text = dismiss)
-                }
-            },
-            onDismissRequest = { if (cancelable) onDismiss() },
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    }
+    AlertDialog(
+        title = { Text(title) },
+        text = { Text(message) },
+        confirmButton = {
+            Button(onClick = onConfirm,) {
+                Text(text = confirm)
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = dismiss)
+            }
+        },
+        onDismissRequest = { if (cancelable) onDismiss() },
+        containerColor = MaterialTheme.colorScheme.surface
+    )
+}
+
+@Composable
+fun AlertDialog(
+    title: String,
+    content: @Composable () -> Unit,
+    confirm: String,
+    dismiss: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    cancelable: Boolean = true
+) {
+    AlertDialog(
+        title = { Text(title) },
+        text = content,
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(text = confirm)
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = dismiss)
+            }
+        },
+        onDismissRequest = { if (cancelable) onDismiss() },
+        containerColor = MaterialTheme.colorScheme.surface
+    )
 }

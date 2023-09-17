@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -17,22 +16,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.mktwohy.needlenook.Project
 import com.mktwohy.needlenook.ProjectScreenDialog
 import com.mktwohy.needlenook.ProjectScreenUiEvent
 import com.mktwohy.needlenook.ProjectScreenUiState
-import com.mktwohy.needlenook.ProjectScreenViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun ProjectScreen(
@@ -44,7 +36,7 @@ fun ProjectScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEvent(ProjectScreenUiEvent.AddProject("My Project ${uiState.projects.lastIndex + 1}"))
+                    onEvent(ProjectScreenUiEvent.ShowDialog(ProjectScreenDialog.AddProject))
                 },
                 content = {
                     Icon(
@@ -85,7 +77,6 @@ fun ProjectScreen(
     when (uiState.dialog) {
         is ProjectScreenDialog.ResetDialog -> {
             AlertDialog(
-                show = true,
                 title = "Confirm Reset",
                 message = "Are you sure you want to reset? Count will be lost.",
                 confirm = "OK",
@@ -97,12 +88,31 @@ fun ProjectScreen(
         is ProjectScreenDialog.RemoveProject -> {
             val project = uiState.dialog.project
             AlertDialog(
-                show = true,
                 title = "Confirm Remove",
                 message = "Are you sure you want to remove \"${project.name}\"?",
                 confirm = "Remove",
                 dismiss = "Cancel",
                 onConfirm = { onEvent(ProjectScreenUiEvent.RemoveProject(project)) },
+                onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
+            )
+        }
+        is ProjectScreenDialog.AddProject -> {
+            var name by remember { mutableStateOf("") }
+
+            AlertDialog(
+                title = "Add Project",
+                content = {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = {
+                            Text("Project Name")
+                        }
+                    )
+                },
+                confirm = "Add",
+                dismiss = "Cancel",
+                onConfirm = { onEvent(ProjectScreenUiEvent.AddProject(name)) },
                 onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
             )
         }
@@ -135,7 +145,9 @@ fun ProjectDropdownMenu(
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.fillMaxWidth().menuAnchor()
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
         )
         ExposedDropdownMenu(
             expanded = isExpanded,
