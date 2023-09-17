@@ -11,9 +11,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
 class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
@@ -48,15 +51,22 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
     fun onEvent(event: ProjectScreenUiEvent) {
         when (event) {
             is ProjectScreenUiEvent.AddProject -> {
+                val project = Project(event.name)
+                onEvent(ProjectScreenUiEvent.HideDialog)
+                viewModelScope.launch {
+                    // Wait for UiState to be updated with project
+                    uiState.filter { project in it.projects }.first()
+                    onEvent(ProjectScreenUiEvent.SelectProject(project))
+                }
                 viewModelScope.launch(Dispatchers.IO) {
                     dao.insertProject(Project(event.name))
-                    onEvent(ProjectScreenUiEvent.HideDialog)
                 }
             }
             is ProjectScreenUiEvent.RemoveProject -> {
+                onEvent(ProjectScreenUiEvent.HideDialog)
+
                 viewModelScope.launch(Dispatchers.IO) {
                     dao.deleteProject(event.project)
-                    onEvent(ProjectScreenUiEvent.HideDialog)
                 }
             }
             is ProjectScreenUiEvent.SelectProject -> {
@@ -102,6 +112,7 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
                 }
             }
             is ProjectScreenUiEvent.HideDialog -> {
+                Timber.d("Hide dialog")
                 _uiState.update { uiState ->
                     uiState.copy(dialog = null)
                 }
