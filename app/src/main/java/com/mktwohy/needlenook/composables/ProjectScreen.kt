@@ -1,6 +1,9 @@
 package com.mktwohy.needlenook.composables
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -27,9 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.tooling.preview.Preview
 import com.mktwohy.needlenook.ProjectScreenDialog
 import com.mktwohy.needlenook.ProjectScreenUiEvent
 import com.mktwohy.needlenook.ProjectScreenUiState
+import com.mktwohy.needlenook.ProjectScreenViewModel
+import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import kotlinx.coroutines.android.awaitFrame
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -191,15 +197,15 @@ fun ProjectDropdownMenu(
     }
 }
 
-//@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-//@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//private fun Preview() {
-//    NeedleNookTheme {
-//        ProjectScreen(
-//            viewModel = ProjectScreenViewModel,
-//            modifier = Modifier
-//                .fillMaxSize()
-//        )
-//    }
-//}
+@Preview(name = "Light Theme", showBackground = true, uiMode = UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Theme", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun Preview() {
+    NeedleNookTheme {
+        ProjectScreen(
+            uiState = ProjectScreenUiState(),
+            onEvent = { },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
