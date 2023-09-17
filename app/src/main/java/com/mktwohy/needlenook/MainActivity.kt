@@ -9,6 +9,7 @@ import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
+    private val repository: Repository by application { repository }
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
