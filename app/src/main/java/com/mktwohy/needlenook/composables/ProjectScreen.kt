@@ -14,6 +14,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -57,7 +58,8 @@ fun ProjectScreen(
         Column(modifier.padding(paddingValues)) {
             ProjectDropdownMenu(
                 uiState = uiState,
-                onEvent = onEvent
+                onEvent = onEvent,
+                modifier = Modifier.fillMaxWidth()
             )
 
             val selectedProject = uiState.selectedProject
@@ -100,15 +102,17 @@ fun ProjectScreen(
 @Composable
 fun ProjectDropdownMenu(
     uiState: ProjectScreenUiState,
-    onEvent: (ProjectScreenUiEvent) -> Unit
+    onEvent: (ProjectScreenUiEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
-        onExpandedChange = { isExpanded = it }
+        onExpandedChange = { isExpanded = it },
+        modifier = modifier
     ) {
-        TextField(
+        OutlinedTextField(
             readOnly = true,
             value = uiState.selectedProject?.name ?: "",
             onValueChange = {  },
@@ -117,7 +121,7 @@ fun ProjectDropdownMenu(
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier.fillMaxWidth().menuAnchor()
         )
         ExposedDropdownMenu(
             expanded = isExpanded,
