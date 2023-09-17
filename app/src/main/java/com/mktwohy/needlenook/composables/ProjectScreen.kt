@@ -17,15 +17,22 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.mktwohy.needlenook.ProjectScreenDialog
 import com.mktwohy.needlenook.ProjectScreenUiEvent
 import com.mktwohy.needlenook.ProjectScreenUiState
+import kotlinx.coroutines.android.awaitFrame
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectScreen(
     uiState: ProjectScreenUiState,
@@ -98,6 +105,8 @@ fun ProjectScreen(
         }
         is ProjectScreenDialog.AddProject -> {
             var name by remember { mutableStateOf("") }
+            val focusRequester = remember { FocusRequester() }
+            val keyboardController = LocalSoftwareKeyboardController.current
 
             AlertDialog(
                 title = "Add Project",
@@ -105,9 +114,8 @@ fun ProjectScreen(
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = {
-                            Text("Project Name")
-                        }
+                        label = { Text("Project Name") },
+                        modifier = Modifier.focusRequester(focusRequester)
                     )
                 },
                 confirm = "Add",
@@ -115,6 +123,12 @@ fun ProjectScreen(
                 onConfirm = { onEvent(ProjectScreenUiEvent.AddProject(name)) },
                 onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
             )
+
+            LaunchedEffect(focusRequester) {
+                awaitFrame()
+                keyboardController?.show()
+                focusRequester.requestFocus()
+            }
         }
         null -> {
 
