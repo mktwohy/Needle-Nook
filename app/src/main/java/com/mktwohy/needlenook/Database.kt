@@ -19,7 +19,7 @@ abstract class ProjectDatabase : RoomDatabase() {
 @Dao
 interface ProjectDao {
     @Insert
-    suspend fun insertProject(context: Project)
+    suspend fun insertProject(project: Project)
 
     @Update
     suspend fun updateProject(project: Project)

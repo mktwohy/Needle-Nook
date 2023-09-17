@@ -6,18 +6,14 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.mktwohy.needlenook.extensions.mutate
-import com.mktwohy.needlenook.extensions.replaceIf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
 class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
@@ -58,7 +54,7 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
             }
             is ProjectScreenUiEvent.RemoveProject -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    dao.deleteProject(Project(event.name))
+                    dao.deleteProject(event.project)
                 }
             }
             is ProjectScreenUiEvent.SelectProject -> {
@@ -71,7 +67,7 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
             }
             is ProjectScreenUiEvent.RenameSelectedProject -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val selectedProject = _uiState.value.selectedProject
+                    val selectedProject = uiState.value.selectedProject
                     checkNotNull(selectedProject)
                     dao.updateProject(selectedProject.copy(name = event.name))
                 }
@@ -108,6 +104,16 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
                     uiState.copy(showResetDialog = false)
                 }
             }
+            is ProjectScreenUiEvent.ShowRemoveProjectDialog -> {
+                _uiState.update { uiState ->
+                    uiState.copy(showRemoveProjectDialog = true)
+                }
+            }
+            is ProjectScreenUiEvent.HideRemoveProjectDialog -> {
+                _uiState.update { uiState ->
+                    uiState.copy(showRemoveProjectDialog = false)
+                }
+            }
         }
     }
 }
@@ -115,7 +121,8 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
 data class ProjectScreenUiState(
     val projects: List<Project> = emptyList(),
     val selectedProjectIndex: Int = 0,
-    val showResetDialog: Boolean = false
+    val showResetDialog: Boolean = false,
+    val showRemoveProjectDialog: Boolean = false
 ) {
     val selectedProject: Project? = projects.getOrNull(selectedProjectIndex)
     val stitchCount: Int? = selectedProject?.stitchCount
@@ -126,12 +133,14 @@ data class ProjectScreenUiState(
 
 sealed interface ProjectScreenUiEvent {
     data class AddProject(val name: String) : ProjectScreenUiEvent
-    data class RemoveProject(val name: String) : ProjectScreenUiEvent
+    data class RemoveProject(val project: Project) : ProjectScreenUiEvent
     data class SelectProject(val project: Project) : ProjectScreenUiEvent
     data class RenameSelectedProject(val name: String) : ProjectScreenUiEvent
     data object IncrementStitchCounter : ProjectScreenUiEvent
     data object DecrementStitchCounter : ProjectScreenUiEvent
     data object ResetStitchCounter : ProjectScreenUiEvent
-    data object HideResetDialog : ProjectScreenUiEvent
     data object ShowResetDialog : ProjectScreenUiEvent
+    data object HideResetDialog : ProjectScreenUiEvent
+    data object ShowRemoveProjectDialog : ProjectScreenUiEvent
+    data object HideRemoveProjectDialog : ProjectScreenUiEvent
 }
