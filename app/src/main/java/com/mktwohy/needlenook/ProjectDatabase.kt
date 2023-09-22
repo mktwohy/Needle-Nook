@@ -39,6 +39,7 @@ interface ProjectDao {
 data class Project(
     val name: String,
     val stitchCount: Int = 0,
+    val notes: String = "",
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )
