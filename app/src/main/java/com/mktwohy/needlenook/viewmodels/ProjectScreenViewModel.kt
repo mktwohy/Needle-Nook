@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.presentation.viewmodels
+package com.mktwohy.needlenook.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.mktwohy.needlenook.presentation.NeedleNookApplication
+import com.mktwohy.needlenook.NeedleNookApplication
 import com.mktwohy.needlenook.data.Project
 import com.mktwohy.needlenook.data.ProjectDao
 import kotlinx.coroutines.Dispatchers

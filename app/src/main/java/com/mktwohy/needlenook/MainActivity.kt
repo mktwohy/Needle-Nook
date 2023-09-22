@@ -1,12 +1,12 @@
-package com.mktwohy.needlenook.presentation
+package com.mktwohy.needlenook
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.mktwohy.needlenook.presentation.composables.App
-import com.mktwohy.needlenook.presentation.viewmodels.FormulaScreenViewModel
-import com.mktwohy.needlenook.presentation.viewmodels.ProjectScreenViewModel
+import com.mktwohy.needlenook.ui.composables.App
+import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
+import com.mktwohy.needlenook.viewmodels.ProjectScreenViewModel
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import timber.log.Timber
 

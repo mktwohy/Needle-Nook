@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.presentation.viewmodels
+package com.mktwohy.needlenook.viewmodels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

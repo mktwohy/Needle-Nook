@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.presentation
+package com.mktwohy.needlenook
 
 import android.app.Activity
 import android.app.Application

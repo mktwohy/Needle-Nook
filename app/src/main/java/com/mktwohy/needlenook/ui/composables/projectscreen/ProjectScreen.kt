@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.presentation.composables.projectscreen
+package com.mktwohy.needlenook.ui.composables.projectscreen
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -31,10 +31,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.needlenook.presentation.viewmodels.ProjectScreenDialog
-import com.mktwohy.needlenook.presentation.viewmodels.ProjectScreenUiEvent
-import com.mktwohy.needlenook.presentation.viewmodels.ProjectScreenUiState
-import com.mktwohy.needlenook.presentation.composables.AlertDialog
+import com.mktwohy.needlenook.viewmodels.ProjectScreenDialog
+import com.mktwohy.needlenook.viewmodels.ProjectScreenUiEvent
+import com.mktwohy.needlenook.viewmodels.ProjectScreenUiState
+import com.mktwohy.needlenook.ui.composables.AlertDialog
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import kotlinx.coroutines.android.awaitFrame
 

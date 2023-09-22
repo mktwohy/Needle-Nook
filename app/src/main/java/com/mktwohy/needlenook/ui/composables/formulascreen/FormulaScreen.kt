@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.presentation.composables.formulascreen
+package com.mktwohy.needlenook.ui.composables.formulascreen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.needlenook.presentation.viewmodels.FormulaScreenViewModel
+import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 
 @Composable
