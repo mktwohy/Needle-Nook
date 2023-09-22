@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.extensions
+package com.mktwohy.needlenook.util.extensions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

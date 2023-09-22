@@ -1,8 +1,9 @@
-package com.mktwohy.needlenook
+package com.mktwohy.needlenook.presentation
 
 import android.app.Activity
 import android.app.Application
-import com.mktwohy.needlenook.extensions.roomDatabase
+import com.mktwohy.needlenook.data.ProjectDatabase
+import com.mktwohy.needlenook.util.extensions.roomDatabase
 
 class NeedleNookApplication : Application() {
     val database by lazy { roomDatabase<ProjectDatabase>("projects.db").build() }

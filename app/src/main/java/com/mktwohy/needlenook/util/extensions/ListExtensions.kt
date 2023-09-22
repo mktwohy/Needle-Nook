@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.extensions
+package com.mktwohy.needlenook.util.extensions
 
 inline fun <T> List<T>.mutate(transform: MutableList<T>.() -> Unit): List<T> =
     this.toMutableList().apply(transform).toList()

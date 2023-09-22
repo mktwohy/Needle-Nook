@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook
+package com.mktwohy.needlenook.data
 
 import androidx.room.Dao
 import androidx.room.Database

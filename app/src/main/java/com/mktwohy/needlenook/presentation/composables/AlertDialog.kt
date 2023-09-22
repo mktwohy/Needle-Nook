@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.composables
+package com.mktwohy.needlenook.presentation.composables
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme

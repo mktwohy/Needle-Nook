@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.extensions
+package com.mktwohy.needlenook.data
 
 import android.content.SharedPreferences
 import kotlin.properties.ReadWriteProperty

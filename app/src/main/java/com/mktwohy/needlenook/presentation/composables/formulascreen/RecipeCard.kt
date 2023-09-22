@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.composables
+package com.mktwohy.needlenook.presentation.composables.formulascreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +24,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.mktwohy.needlenook.FormulaInputUiState
-import com.mktwohy.needlenook.FormulaUiState
+import com.mktwohy.needlenook.presentation.viewmodels.FormulaInputUiState
+import com.mktwohy.needlenook.presentation.viewmodels.FormulaUiState
 
 @Composable
 fun FormulaCard(

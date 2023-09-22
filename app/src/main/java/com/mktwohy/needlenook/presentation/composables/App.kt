@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.composables
+package com.mktwohy.needlenook.presentation.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -27,9 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
-import com.mktwohy.needlenook.FormulaScreenViewModel
-import com.mktwohy.needlenook.ProjectScreenViewModel
-import com.mktwohy.needlenook.extensions.noRippleClickable
+import com.mktwohy.needlenook.presentation.viewmodels.FormulaScreenViewModel
+import com.mktwohy.needlenook.presentation.viewmodels.ProjectScreenViewModel
+import com.mktwohy.needlenook.presentation.composables.formulascreen.FormulaScreen
+import com.mktwohy.needlenook.presentation.composables.projectscreen.ProjectScreen
+import com.mktwohy.needlenook.util.extensions.noRippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

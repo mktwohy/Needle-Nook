@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.composables
+package com.mktwohy.needlenook.presentation.composables.projectscreen
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.mktwohy.needlenook.extensions
+package com.mktwohy.needlenook.util.extensions
 
 import android.content.Context
 import androidx.room.Room
