@@ -31,6 +31,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mktwohy.needlenook.viewmodels.ProjectScreenDialog
 import com.mktwohy.needlenook.viewmodels.ProjectScreenUiEvent
 import com.mktwohy.needlenook.viewmodels.ProjectScreenUiState
@@ -65,7 +66,9 @@ fun ProjectScreen(
             ProjectDropdownMenu(
                 uiState = uiState,
                 onEvent = onEvent,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
             )
 
             val selectedProject = uiState.selectedProject
@@ -82,7 +85,14 @@ fun ProjectScreen(
                     isDecrementEnabled = uiState.decrementStitchCountIsEnabled,
                     isResetEnabled = uiState.resetButtonIsEnabled,
                     modifier = Modifier
+                        .padding(4.dp)
                         .fillMaxWidth()
+                )
+                MarkdownEditor(
+                    value = uiState.notes,
+                    onValueChange = { onEvent(ProjectScreenUiEvent.EditNotes(it)) },
+                    modifier = Modifier
+                        .padding(4.dp)
                 )
             }
         }

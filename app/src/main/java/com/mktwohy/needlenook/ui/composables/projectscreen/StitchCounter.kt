@@ -43,7 +43,6 @@ fun StitchCounter(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .padding(4.dp)
             .background(
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 shape = MaterialTheme.shapes.medium
