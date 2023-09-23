@@ -61,7 +61,7 @@ fun MarkdownEditor(
         modifier = modifier
     ) {
         Column(Modifier.padding(8.dp)) {
-            EditorButtonRow(
+            MarkdownEditorButtonRow(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth()
@@ -105,7 +105,7 @@ private fun BasicMarkdownTextField(
 }
 
 @Composable
-private fun EditorButtonRow(
+private fun MarkdownEditorButtonRow(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier
