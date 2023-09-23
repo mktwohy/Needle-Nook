@@ -52,27 +52,18 @@ fun MarkdownEditor(
 ) {
     val shape = MaterialTheme.shapes.medium
 
+
     Surface(
         shape = shape,
         tonalElevation = 4.dp,
         modifier = modifier
     ) {
         Column(Modifier.padding(8.dp)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                MarkdownStyleButton(
-                    onClick = { /*TODO*/ },
-                    icon = Icons.Outlined.FormatBold,
-                    isSelected = value.getSelectedSpanStyles().any { it.item.fontWeight == FontWeight.Bold }
-                )
-                MarkdownStyleButton(
-                    onClick = { /*TODO*/ },
-                    icon = Icons.Outlined.FormatItalic,
-                    isSelected = value.getSelectedSpanStyles().any { it.item.fontStyle == FontStyle.Italic }
-                )
-            }
+            EditorButtonRow(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier.fillMaxWidth()
+            )
             Box(
                 modifier = Modifier
                     .background(
@@ -81,18 +72,9 @@ fun MarkdownEditor(
                     )
                     .fillMaxSize()
             ) {
-                BasicTextField(
+                BasicMarkdownTextField(
                     value = value,
                     onValueChange = onValueChange,
-                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
-                    visualTransformation = {
-                        val annotatedString = Markdown(it.text).toAnnotatedString()
-                        onValueChange(value.copy(annotatedString = annotatedString))
-                        TransformedText(
-                            text = annotatedString,
-                            offsetMapping = OffsetMapping.Identity
-                        )
-                    },
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxSize()
@@ -103,24 +85,64 @@ fun MarkdownEditor(
 }
 
 @Composable
+private fun BasicMarkdownTextField(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier
+) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+        visualTransformation = {
+            val annotatedString = Markdown(it.text).toAnnotatedString()
+            onValueChange(value.copy(annotatedString = annotatedString))
+            TransformedText(
+                text = annotatedString,
+                offsetMapping = OffsetMapping.Identity
+            )
+        },
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun EditorButtonRow(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier
+) {
+    val selectedSpanStyles = value.getSelectedSpanStyles()
+    val isSelectionBold = selectedSpanStyles.any { it.item.fontWeight == FontWeight.Bold }
+    val isSelectionItalic = selectedSpanStyles.any { it.item.fontStyle == FontStyle.Italic }
+
+    Row(modifier = modifier) {
+        MarkdownStyleButton(
+            onClick = { /*TODO*/ },
+            icon = Icons.Outlined.FormatBold,
+            isSelected = isSelectionBold
+        )
+        MarkdownStyleButton(
+            onClick = { /*TODO*/ },
+            icon = Icons.Outlined.FormatItalic,
+            isSelected = isSelectionItalic
+        )
+    }
+}
+
+@Composable
 private fun MarkdownStyleButton(
     onClick: () -> Unit,
     icon: ImageVector,
     isSelected: Boolean = false
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+
     IconButton(
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
-            contentColor = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            },
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.inversePrimary
-            } else {
-                Color.Transparent
-            }
+            contentColor = if (isSelected) colorScheme.primary else colorScheme.onSurface,
+            containerColor = if (isSelected) colorScheme.inversePrimary else Color.Transparent
         )
     ) {
         Icon(imageVector = icon, contentDescription = icon.name)
