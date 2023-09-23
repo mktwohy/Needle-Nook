@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,9 +33,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -43,6 +42,9 @@ fun AnnotatedString.getSpanStyles(start: Int, end: Int): List<AnnotatedString.Ra
 
 fun TextFieldValue.getSelectedSpanStyles(): List<AnnotatedString.Range<SpanStyle>> =
     annotatedString.getSpanStyles(selection.start, selection.end)
+
+fun TextFieldValue.annotateAsMarkdown(): TextFieldValue =
+    this.copy(annotatedString = Markdown(text).toAnnotatedString())
 
 @Composable
 fun MarkdownEditor(
@@ -90,18 +92,14 @@ private fun BasicMarkdownTextField(
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier
 ) {
+    LaunchedEffect(Unit) {
+        onValueChange(value.annotateAsMarkdown())
+    }
+
     BasicTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.annotateAsMarkdown()) },
         textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
-        visualTransformation = {
-            val annotatedString = Markdown(it.text).toAnnotatedString()
-            onValueChange(value.copy(annotatedString = annotatedString))
-            TransformedText(
-                text = annotatedString,
-                offsetMapping = OffsetMapping.Identity
-            )
-        },
         modifier = modifier
     )
 }
