@@ -110,14 +110,6 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
                     onEvent(ProjectScreenUiEvent.HideDialog)
                 }
             }
-            is ProjectScreenUiEvent.EditNotes -> {
-                _uiState.update { uiState ->
-                    uiState.copy(notes = event.value)
-                }
-            }
-            is ProjectScreenUiEvent.SaveNotes -> {
-                TODO()
-            }
             is ProjectScreenUiEvent.ShowDialog -> {
                 _uiState.update { uiState ->
                     uiState.copy(dialog = event.dialog)
@@ -169,8 +161,6 @@ sealed interface ProjectScreenUiEvent {
     data object IncrementStitchCounter : ProjectScreenUiEvent
     data object DecrementStitchCounter : ProjectScreenUiEvent
     data object ResetStitchCounter : ProjectScreenUiEvent
-    data class EditNotes(val value: TextFieldValue) : ProjectScreenUiEvent
-    data object SaveNotes : ProjectScreenUiEvent
     data class ShowDialog(val dialog: ProjectScreenDialog) : ProjectScreenUiEvent
     data object HideDialog : ProjectScreenUiEvent
 }
