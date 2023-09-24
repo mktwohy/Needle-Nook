@@ -27,10 +27,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.getSelectedText
+import androidx.compose.ui.text.input.getTextAfterSelection
+import androidx.compose.ui.text.input.getTextBeforeSelection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -50,6 +55,46 @@ fun TextFieldValue.getSelectedSpanStyles(): List<AnnotatedString.Range<SpanStyle
 fun TextFieldValue.annotateAsMarkdown(): TextFieldValue =
     this.copy(annotatedString = Markdown(text).toAnnotatedString())
 
+fun TextFieldValue.applyMdStyleToSelection(mdStyle: String): TextFieldValue {
+    val originalTextLength = this.text.length
+    val cursorOffset = mdStyle.length
+    return this.copy(
+        annotatedString = buildAnnotatedString {
+            append(getTextBeforeSelection(maxChars = originalTextLength))
+            append(mdStyle)
+            append(getSelectedText())
+            append(mdStyle)
+            append(getTextAfterSelection(maxChars = originalTextLength))
+        },
+        selection = TextRange(
+            start = selection.start + cursorOffset,
+            end = selection.end + cursorOffset
+        )
+    ).annotateAsMarkdown()
+}
+
+fun TextFieldValue.removeMdStyleFromSelection(mdStyle: String): TextFieldValue {
+    val originalTextLength = this.text.length
+    val cursorOffset = mdStyle.length
+    val textBeforeSelection = getTextBeforeSelection(maxChars = originalTextLength)
+    val textAfterSelection = getTextAfterSelection(maxChars = originalTextLength)
+
+    if (!textBeforeSelection.endsWith(mdStyle) || !textAfterSelection.startsWith(mdStyle)) {
+        return this
+    }
+    return this.copy(
+        annotatedString = buildAnnotatedString {
+            append(textBeforeSelection.removeSuffix(mdStyle))
+            append(getSelectedText())
+            append(textAfterSelection.removePrefix(mdStyle))
+        },
+        selection = TextRange(
+            start = selection.start - cursorOffset,
+            end = selection.end - cursorOffset
+        )
+    ).annotateAsMarkdown()
+}
+
 class MarkdownEditorViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MarkdownEditorUiState())
     val uiState = _uiState.asStateFlow()
@@ -63,12 +108,24 @@ class MarkdownEditorViewModel : ViewModel() {
                     }
                 }
             }
+            is MarkdownEditorUiEvent.ClickBold -> {
+                viewModelScope.launch {
+                    _uiState.update { uiState ->
+                        if (uiState.isBoldButtonSelected) {
+                            uiState.copy(textFieldValue = uiState.textFieldValue.removeMdStyleFromSelection("**"))
+                        } else {
+                            uiState.copy(textFieldValue = uiState.textFieldValue.applyMdStyleToSelection("**"))
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 sealed class MarkdownEditorUiEvent {
     data class TextFieldValueChange(val textFieldValue: TextFieldValue) : MarkdownEditorUiEvent()
+    data object ClickBold : MarkdownEditorUiEvent()
 }
 
 data class MarkdownEditorUiState(val textFieldValue: TextFieldValue = TextFieldValue()) {
@@ -139,7 +196,7 @@ private fun MarkdownEditorButtonRow(
 ) {
     Row(modifier = modifier) {
         MarkdownEditorStyleButton(
-            onClick = { /*TODO*/ },
+            onClick = { onEvent(MarkdownEditorUiEvent.ClickBold) },
             icon = Icons.Outlined.FormatBold,
             isSelected = uiState.isBoldButtonSelected
         )
