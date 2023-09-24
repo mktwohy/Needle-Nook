@@ -138,12 +138,12 @@ private fun MarkdownEditorButtonRow(
     modifier: Modifier
 ) {
     Row(modifier = modifier) {
-        MarkdownStyleButton(
+        MarkdownEditorStyleButton(
             onClick = { /*TODO*/ },
             icon = Icons.Outlined.FormatBold,
             isSelected = uiState.isBoldButtonSelected
         )
-        MarkdownStyleButton(
+        MarkdownEditorStyleButton(
             onClick = { /*TODO*/ },
             icon = Icons.Outlined.FormatItalic,
             isSelected = uiState.isItalicButtonSelected
@@ -152,7 +152,7 @@ private fun MarkdownEditorButtonRow(
 }
 
 @Composable
-private fun MarkdownStyleButton(
+private fun MarkdownEditorStyleButton(
     onClick: () -> Unit,
     icon: ImageVector,
     isSelected: Boolean = false
