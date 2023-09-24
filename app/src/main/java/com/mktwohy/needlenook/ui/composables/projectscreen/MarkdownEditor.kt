@@ -119,6 +119,17 @@ class MarkdownEditorViewModel : ViewModel() {
                     }
                 }
             }
+            is MarkdownEditorUiEvent.ClickItalics -> {
+                viewModelScope.launch {
+                    _uiState.update { uiState ->
+                        if (uiState.isItalicButtonSelected) {
+                            uiState.copy(textFieldValue = uiState.textFieldValue.removeMdStyleFromSelection("*"))
+                        } else {
+                            uiState.copy(textFieldValue = uiState.textFieldValue.applyMdStyleToSelection("*"))
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -126,6 +137,7 @@ class MarkdownEditorViewModel : ViewModel() {
 sealed class MarkdownEditorUiEvent {
     data class TextFieldValueChange(val textFieldValue: TextFieldValue) : MarkdownEditorUiEvent()
     data object ClickBold : MarkdownEditorUiEvent()
+    data object ClickItalics : MarkdownEditorUiEvent()
 }
 
 data class MarkdownEditorUiState(val textFieldValue: TextFieldValue = TextFieldValue()) {
@@ -201,7 +213,7 @@ private fun MarkdownEditorButtonRow(
             isSelected = uiState.isBoldButtonSelected
         )
         MarkdownEditorStyleButton(
-            onClick = { /*TODO*/ },
+            onClick = { onEvent(MarkdownEditorUiEvent.ClickItalics) },
             icon = Icons.Outlined.FormatItalic,
             isSelected = uiState.isItalicButtonSelected
         )
