@@ -153,53 +153,43 @@ class MarkdownEditorViewModel : ViewModel() {
     fun onUiEvent(event: MarkdownEditorUiEvent) {
         when (event) {
             is MarkdownEditorUiEvent.TextFieldValueChange -> {
-                viewModelScope.launch {
-                    _uiState.update { uiState ->
-                        uiState.copy(textFieldValue = event.textFieldValue.annotateAsMarkdown())
-                    }
+                updateTextFieldValue {
+                    event.textFieldValue.annotateAsMarkdown()
                 }
             }
             is MarkdownEditorUiEvent.ClickBold -> {
-                viewModelScope.launch {
-                    _uiState.update { uiState ->
-                        if (uiState.isBoldButtonSelected) {
-                            uiState.copy(textFieldValue = uiState.textFieldValue.removeMdStyleFromSelection("**"))
-                        } else {
-                            uiState.copy(textFieldValue = uiState.textFieldValue.applyMdStyleToSelection("**"))
-                        }
+               updateTextFieldValue {
+                    if (isBoldButtonSelected) {
+                        it.removeMdStyleFromSelection("**")
+                    } else {
+                        it.applyMdStyleToSelection("**")
                     }
                 }
             }
             is MarkdownEditorUiEvent.ClickItalics -> {
-                viewModelScope.launch {
-                    _uiState.update { uiState ->
-                        if (uiState.isItalicButtonSelected) {
-                            uiState.copy(
-                                textFieldValue = uiState.textFieldValue.removeMdStyleFromSelection("*")
-                            )
-                        } else {
-                            uiState.copy(textFieldValue = uiState.textFieldValue.applyMdStyleToSelection("*"))
-                        }
+               updateTextFieldValue {
+                    if (isItalicButtonSelected) {
+                        it.removeMdStyleFromSelection("*")
+                    } else {
+                       it.applyMdStyleToSelection("*")
                     }
                 }
             }
             is MarkdownEditorUiEvent.ClickIncreaseIndent -> {
-                viewModelScope.launch {
-                    _uiState.update { uiState ->
-                        uiState.copy(
-                            textFieldValue = uiState.textFieldValue.increaseSelectedLineIndent()
-                        )
-                    }
-                }
+               updateTextFieldValue { it.increaseSelectedLineIndent() }
             }
             is MarkdownEditorUiEvent.ClickDecreaseIndent -> {
-                viewModelScope.launch {
-                    _uiState.update { uiState ->
-                        uiState.copy(
-                            textFieldValue = uiState.textFieldValue.decreaseSelectedLineIndent()
-                        )
-                    }
+                updateTextFieldValue {
+                    it.decreaseSelectedLineIndent()
                 }
+            }
+        }
+    }
+
+    private fun updateTextFieldValue(transform: MarkdownEditorUiState.(TextFieldValue) -> TextFieldValue) {
+        viewModelScope.launch {
+            _uiState.update { uiState ->
+                uiState.copy(textFieldValue = uiState.transform(uiState.textFieldValue))
             }
         }
     }
