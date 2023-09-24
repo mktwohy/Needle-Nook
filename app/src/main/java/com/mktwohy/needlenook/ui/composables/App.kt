@@ -27,15 +27,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
 import com.mktwohy.needlenook.viewmodels.ProjectScreenViewModel
 import com.mktwohy.needlenook.ui.composables.formulascreen.FormulaScreen
+import com.mktwohy.needlenook.ui.composables.projectscreen.MarkdownEditorViewModel
 import com.mktwohy.needlenook.ui.composables.projectscreen.ProjectScreen
 import com.mktwohy.needlenook.util.extensions.noRippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App(projectScreenViewModel: ProjectScreenViewModel, formulaScreenViewModel: FormulaScreenViewModel) {
+fun App(
+    projectScreenViewModel: ProjectScreenViewModel,
+    markdownEditorViewModel: MarkdownEditorViewModel,
+    formulaScreenViewModel: FormulaScreenViewModel,
+) {
     val focusManager = LocalFocusManager.current
     val tabItems = listOf(
         TabModel(
@@ -92,8 +98,10 @@ fun App(projectScreenViewModel: ProjectScreenViewModel, formulaScreenViewModel: 
             ) { index ->
                 when (index) {
                     0 -> ProjectScreen(
-                        uiState = projectScreenViewModel.uiState.collectAsState().value,
-                        onEvent = projectScreenViewModel::onEvent,
+                        projectScreenUiState = projectScreenViewModel.uiState.collectAsState().value,
+                        onProjectScreenEvent = projectScreenViewModel::onEvent,
+                        markdownEditorUiState = markdownEditorViewModel.uiState.collectAsState().value,
+                        onMarkdownEditorEvent = markdownEditorViewModel::onUiEvent,
                         modifier = Modifier.fillMaxSize()
                     )
                     1 -> FormulaScreen(formulaScreenViewModel, Modifier.fillMaxSize())
@@ -103,15 +111,6 @@ fun App(projectScreenViewModel: ProjectScreenViewModel, formulaScreenViewModel: 
         }
     }
 }
-
-//@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-//@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//private fun Preview() {
-//    NeedleNookTheme {
-//        App(MainViewModel(repository = Repository(LocalContext.current)))
-//    }
-//}
 
 data class TabModel(
     val title: String,

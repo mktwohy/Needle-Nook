@@ -42,15 +42,17 @@ import kotlinx.coroutines.android.awaitFrame
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectScreen(
-    uiState: ProjectScreenUiState,
-    onEvent: (ProjectScreenUiEvent) -> Unit,
+    projectScreenUiState: ProjectScreenUiState,
+    onProjectScreenEvent: (ProjectScreenUiEvent) -> Unit,
+    markdownEditorUiState: MarkdownEditorUiState,
+    onMarkdownEditorEvent: (MarkdownEditorUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEvent(ProjectScreenUiEvent.ShowDialog(ProjectScreenDialog.AddProject))
+                    onProjectScreenEvent(ProjectScreenUiEvent.ShowDialog(ProjectScreenDialog.AddProject))
                 },
                 content = {
                     Icon(
@@ -64,59 +66,59 @@ fun ProjectScreen(
 
         Column(modifier.padding(paddingValues)) {
             ProjectDropdownMenu(
-                uiState = uiState,
-                onEvent = onEvent,
+                uiState = projectScreenUiState,
+                onEvent = onProjectScreenEvent,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
             )
 
-            val selectedProject = uiState.selectedProject
+            val selectedProject = projectScreenUiState.selectedProject
             if (selectedProject != null) {
                 StitchCounter(
                     count = selectedProject.stitchCount,
-                    onIncrement = { onEvent(ProjectScreenUiEvent.IncrementStitchCounter) },
-                    onDecrement = { onEvent(ProjectScreenUiEvent.DecrementStitchCounter) },
+                    onIncrement = { onProjectScreenEvent(ProjectScreenUiEvent.IncrementStitchCounter) },
+                    onDecrement = { onProjectScreenEvent(ProjectScreenUiEvent.DecrementStitchCounter) },
                     onReset = {
                         val dialog = ProjectScreenDialog.ResetDialog
-                        onEvent(ProjectScreenUiEvent.ShowDialog(dialog))
+                        onProjectScreenEvent(ProjectScreenUiEvent.ShowDialog(dialog))
                     },
-                    isIncrementEnabled = uiState.incrementStitchCountIsEnabled,
-                    isDecrementEnabled = uiState.decrementStitchCountIsEnabled,
-                    isResetEnabled = uiState.resetButtonIsEnabled,
+                    isIncrementEnabled = projectScreenUiState.incrementStitchCountIsEnabled,
+                    isDecrementEnabled = projectScreenUiState.decrementStitchCountIsEnabled,
+                    isResetEnabled = projectScreenUiState.resetButtonIsEnabled,
                     modifier = Modifier
                         .padding(4.dp)
                         .fillMaxWidth()
                 )
                 MarkdownEditor(
-                    value = uiState.notes,
-                    onValueChange = { onEvent(ProjectScreenUiEvent.EditNotes(it)) },
+                    uiState = markdownEditorUiState,
+                    onEvent = onMarkdownEditorEvent,
                     modifier = Modifier
                         .padding(4.dp)
                 )
             }
         }
     }
-    when (uiState.dialog) {
+    when (projectScreenUiState.dialog) {
         is ProjectScreenDialog.ResetDialog -> {
             AlertDialog(
                 title = "Confirm Reset",
                 message = "Are you sure you want to reset? Count will be lost.",
                 confirm = "OK",
                 dismiss = "Cancel",
-                onConfirm = { onEvent(ProjectScreenUiEvent.ResetStitchCounter) },
-                onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
+                onConfirm = { onProjectScreenEvent(ProjectScreenUiEvent.ResetStitchCounter) },
+                onDismiss = { onProjectScreenEvent(ProjectScreenUiEvent.HideDialog) }
             )
         }
         is ProjectScreenDialog.RemoveProject -> {
-            val project = uiState.dialog.project
+            val project = projectScreenUiState.dialog.project
             AlertDialog(
                 title = "Confirm Remove",
                 message = "Are you sure you want to remove \"${project.name}\"?",
                 confirm = "Remove",
                 dismiss = "Cancel",
-                onConfirm = { onEvent(ProjectScreenUiEvent.RemoveProject(project)) },
-                onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
+                onConfirm = { onProjectScreenEvent(ProjectScreenUiEvent.RemoveProject(project)) },
+                onDismiss = { onProjectScreenEvent(ProjectScreenUiEvent.HideDialog) }
             )
         }
         is ProjectScreenDialog.AddProject -> {
@@ -136,8 +138,8 @@ fun ProjectScreen(
                 },
                 confirm = "Add",
                 dismiss = "Cancel",
-                onConfirm = { onEvent(ProjectScreenUiEvent.AddProject(name)) },
-                onDismiss = { onEvent(ProjectScreenUiEvent.HideDialog) }
+                onConfirm = { onProjectScreenEvent(ProjectScreenUiEvent.AddProject(name)) },
+                onDismiss = { onProjectScreenEvent(ProjectScreenUiEvent.HideDialog) }
             )
 
             LaunchedEffect(focusRequester) {
@@ -213,8 +215,10 @@ fun ProjectDropdownMenu(
 private fun Preview() {
     NeedleNookTheme {
         ProjectScreen(
-            uiState = ProjectScreenUiState(),
-            onEvent = { },
+            projectScreenUiState = ProjectScreenUiState(),
+            onProjectScreenEvent = { },
+            markdownEditorUiState = MarkdownEditorUiState(),
+            onMarkdownEditorEvent = { },
             modifier = Modifier.fillMaxSize()
         )
     }

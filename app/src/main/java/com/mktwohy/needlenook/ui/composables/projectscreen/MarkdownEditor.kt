@@ -20,11 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,6 +33,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 fun AnnotatedString.getSpanStyles(start: Int, end: Int): List<AnnotatedString.Range<SpanStyle>> =
     this.spanStyles.filter { start >= it.start && end <= it.end }
@@ -46,10 +50,37 @@ fun TextFieldValue.getSelectedSpanStyles(): List<AnnotatedString.Range<SpanStyle
 fun TextFieldValue.annotateAsMarkdown(): TextFieldValue =
     this.copy(annotatedString = Markdown(text).toAnnotatedString())
 
+class MarkdownEditorViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(MarkdownEditorUiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun onUiEvent(event: MarkdownEditorUiEvent) {
+        when (event) {
+            is MarkdownEditorUiEvent.TextFieldValueChange -> {
+                viewModelScope.launch {
+                    _uiState.update { uiState ->
+                        uiState.copy(textFieldValue = event.textFieldValue.annotateAsMarkdown())
+                    }
+                }
+            }
+        }
+    }
+}
+
+sealed class MarkdownEditorUiEvent {
+    data class TextFieldValueChange(val textFieldValue: TextFieldValue) : MarkdownEditorUiEvent()
+}
+
+data class MarkdownEditorUiState(val textFieldValue: TextFieldValue = TextFieldValue()) {
+    private val selectedSpanStyles = textFieldValue.getSelectedSpanStyles()
+    val isBoldButtonSelected = selectedSpanStyles.any { it.item.fontWeight == FontWeight.Bold }
+    val isItalicButtonSelected = selectedSpanStyles.any { it.item.fontStyle == FontStyle.Italic }
+}
+
 @Composable
 fun MarkdownEditor(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    uiState: MarkdownEditorUiState,
+    onEvent: (MarkdownEditorUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val shape = MaterialTheme.shapes.medium
@@ -62,8 +93,8 @@ fun MarkdownEditor(
     ) {
         Column(Modifier.padding(8.dp)) {
             MarkdownEditorButtonRow(
-                value = value,
-                onValueChange = onValueChange,
+                uiState = uiState,
+                onEvent = onEvent,
                 modifier = Modifier.fillMaxWidth()
             )
             Box(
@@ -75,8 +106,8 @@ fun MarkdownEditor(
                     .fillMaxSize()
             ) {
                 BasicMarkdownTextField(
-                    value = value,
-                    onValueChange = onValueChange,
+                    uiState = uiState,
+                    onEvent = onEvent,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxSize()
@@ -88,17 +119,13 @@ fun MarkdownEditor(
 
 @Composable
 private fun BasicMarkdownTextField(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    uiState: MarkdownEditorUiState,
+    onEvent: (MarkdownEditorUiEvent) -> Unit,
     modifier: Modifier
 ) {
-    LaunchedEffect(Unit) {
-        onValueChange(value.annotateAsMarkdown())
-    }
-
     BasicTextField(
-        value = value,
-        onValueChange = { onValueChange(it.annotateAsMarkdown()) },
+        value = uiState.textFieldValue,
+        onValueChange = { onEvent(MarkdownEditorUiEvent.TextFieldValueChange(it)) },
         textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
         modifier = modifier
     )
@@ -106,24 +133,20 @@ private fun BasicMarkdownTextField(
 
 @Composable
 private fun MarkdownEditorButtonRow(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    uiState: MarkdownEditorUiState,
+    onEvent: (MarkdownEditorUiEvent) -> Unit,
     modifier: Modifier
 ) {
-    val selectedSpanStyles = value.getSelectedSpanStyles()
-    val isSelectionBold = selectedSpanStyles.any { it.item.fontWeight == FontWeight.Bold }
-    val isSelectionItalic = selectedSpanStyles.any { it.item.fontStyle == FontStyle.Italic }
-
     Row(modifier = modifier) {
         MarkdownStyleButton(
             onClick = { /*TODO*/ },
             icon = Icons.Outlined.FormatBold,
-            isSelected = isSelectionBold
+            isSelected = uiState.isBoldButtonSelected
         )
         MarkdownStyleButton(
             onClick = { /*TODO*/ },
             icon = Icons.Outlined.FormatItalic,
-            isSelected = isSelectionItalic
+            isSelected = uiState.isItalicButtonSelected
         )
     }
 }
@@ -150,8 +173,11 @@ private fun MarkdownStyleButton(
 @Preview
 @Composable
 private fun MarkdownEditorPreview() {
-    var text by remember {
-        mutableStateOf(
+    val viewModel = viewModel<MarkdownEditorViewModel>()
+    val uiState by viewModel.uiState.collectAsState()
+
+    viewModel.onUiEvent(
+        MarkdownEditorUiEvent.TextFieldValueChange(
             TextFieldValue(
                 """
                     ## Header 2
@@ -163,15 +189,15 @@ private fun MarkdownEditorPreview() {
                 """.trimIndent()
             )
         )
-    }
+    )
 
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
         MarkdownEditor(
-            value = text,
-            onValueChange = { text = it },
+            uiState = uiState,
+            onEvent = viewModel::onUiEvent,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
