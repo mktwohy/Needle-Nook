@@ -8,11 +8,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FormatBold
+import androidx.compose.material.icons.outlined.FormatIndentDecrease
+import androidx.compose.material.icons.outlined.FormatIndentIncrease
 import androidx.compose.material.icons.outlined.FormatItalic
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -25,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
@@ -37,6 +44,7 @@ import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.input.getTextAfterSelection
 import androidx.compose.ui.text.input.getTextBeforeSelection
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -95,6 +103,49 @@ fun TextFieldValue.removeMdStyleFromSelection(mdStyle: String): TextFieldValue {
     ).annotateAsMarkdown()
 }
 
+fun TextFieldValue.increaseSelectedLineIndent(): TextFieldValue {
+    val originalTextLength = this.text.length
+
+    val textBeforeSelection = getTextBeforeSelection(maxChars = originalTextLength)
+    val textAfterSelection = getTextAfterSelection(maxChars = originalTextLength)
+    val selectedLineStartIndex = textBeforeSelection.indexOfLast { it == '\n' } + 1
+
+    return this.copy(
+        annotatedString = buildAnnotatedString {
+            append(textBeforeSelection.slice(0..<selectedLineStartIndex))
+            append(" ".repeat(4))
+            append(textBeforeSelection.slice(selectedLineStartIndex..textBeforeSelection.lastIndex))
+            append(getSelectedText())
+            append(textAfterSelection)
+        },
+        selection = TextRange(
+            start = selection.start + 4,
+            end = selection.end + 4
+        )
+    ).annotateAsMarkdown()
+}
+
+fun TextFieldValue.decreaseSelectedLineIndent(): TextFieldValue {
+    val originalTextLength = this.text.length
+
+    val textBeforeSelection = getTextBeforeSelection(maxChars = originalTextLength)
+    val textAfterSelection = getTextAfterSelection(maxChars = originalTextLength)
+    val selectedLineStartIndex = textBeforeSelection.indexOfLast { it == '\n' } + 1
+
+    return this.copy(
+        annotatedString = buildAnnotatedString {
+            append(textBeforeSelection.slice(0..<selectedLineStartIndex))
+            append(textBeforeSelection.slice(selectedLineStartIndex..textBeforeSelection.lastIndex).removePrefix(" ".repeat(4)))
+            append(getSelectedText())
+            append(textAfterSelection)
+        },
+        selection = TextRange(
+            start = selection.start + 4,
+            end = selection.end + 4
+        )
+    ).annotateAsMarkdown()
+}
+
 class MarkdownEditorViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MarkdownEditorUiState())
     val uiState = _uiState.asStateFlow()
@@ -123,10 +174,30 @@ class MarkdownEditorViewModel : ViewModel() {
                 viewModelScope.launch {
                     _uiState.update { uiState ->
                         if (uiState.isItalicButtonSelected) {
-                            uiState.copy(textFieldValue = uiState.textFieldValue.removeMdStyleFromSelection("*"))
+                            uiState.copy(
+                                textFieldValue = uiState.textFieldValue.removeMdStyleFromSelection("*")
+                            )
                         } else {
                             uiState.copy(textFieldValue = uiState.textFieldValue.applyMdStyleToSelection("*"))
                         }
+                    }
+                }
+            }
+            is MarkdownEditorUiEvent.ClickIncreaseIndent -> {
+                viewModelScope.launch {
+                    _uiState.update { uiState ->
+                        uiState.copy(
+                            textFieldValue = uiState.textFieldValue.increaseSelectedLineIndent()
+                        )
+                    }
+                }
+            }
+            is MarkdownEditorUiEvent.ClickDecreaseIndent -> {
+                viewModelScope.launch {
+                    _uiState.update { uiState ->
+                        uiState.copy(
+                            textFieldValue = uiState.textFieldValue.decreaseSelectedLineIndent()
+                        )
                     }
                 }
             }
@@ -138,6 +209,8 @@ sealed class MarkdownEditorUiEvent {
     data class TextFieldValueChange(val textFieldValue: TextFieldValue) : MarkdownEditorUiEvent()
     data object ClickBold : MarkdownEditorUiEvent()
     data object ClickItalics : MarkdownEditorUiEvent()
+    data object ClickIncreaseIndent : MarkdownEditorUiEvent()
+    data object ClickDecreaseIndent : MarkdownEditorUiEvent()
 }
 
 data class MarkdownEditorUiState(val textFieldValue: TextFieldValue = TextFieldValue()) {
@@ -154,7 +227,6 @@ fun MarkdownEditor(
 ) {
     val shape = MaterialTheme.shapes.medium
 
-
     Surface(
         shape = shape,
         tonalElevation = 4.dp,
@@ -164,7 +236,10 @@ fun MarkdownEditor(
             MarkdownEditorButtonRow(
                 uiState = uiState,
                 onEvent = onEvent,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .height(24.dp)
             )
             Box(
                 modifier = Modifier
@@ -217,7 +292,38 @@ private fun MarkdownEditorButtonRow(
             icon = Icons.Outlined.FormatItalic,
             isSelected = uiState.isItalicButtonSelected
         )
+        VerticalDivider()
+        MarkdownEditorStyleButton(
+            onClick = { onEvent(MarkdownEditorUiEvent.ClickIncreaseIndent) },
+            icon = Icons.Outlined.FormatIndentIncrease,
+            isSelected = false
+        )
+        MarkdownEditorStyleButton(
+            onClick = { onEvent(MarkdownEditorUiEvent.ClickDecreaseIndent) },
+            icon = Icons.Outlined.FormatIndentDecrease,
+            isSelected = false
+        )
     }
+}
+
+@Composable
+fun VerticalDivider(
+    modifier: Modifier = Modifier,
+    thickness: Dp = DividerDefaults.Thickness,
+    color: Color = DividerDefaults.color,
+) {
+    val targetThickness = if (thickness == Dp.Hairline) {
+        (1f / LocalDensity.current.density).dp
+    } else {
+        thickness
+    }
+
+    Box(
+        modifier
+            .fillMaxHeight()
+            .width(targetThickness)
+            .background(color)
+    )
 }
 
 @Composable
