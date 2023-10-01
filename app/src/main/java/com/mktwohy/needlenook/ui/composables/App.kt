@@ -27,11 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
 import com.mktwohy.needlenook.viewmodels.ProjectScreenViewModel
 import com.mktwohy.needlenook.ui.composables.formulascreen.FormulaScreen
-import com.mktwohy.needlenook.ui.composables.projectscreen.MarkdownEditorViewModel
 import com.mktwohy.needlenook.ui.composables.projectscreen.ProjectScreen
 import com.mktwohy.needlenook.util.extensions.noRippleClickable
 
@@ -39,7 +37,6 @@ import com.mktwohy.needlenook.util.extensions.noRippleClickable
 @Composable
 fun App(
     projectScreenViewModel: ProjectScreenViewModel,
-    markdownEditorViewModel: MarkdownEditorViewModel,
     formulaScreenViewModel: FormulaScreenViewModel,
 ) {
     val focusManager = LocalFocusManager.current
@@ -99,9 +96,9 @@ fun App(
                 when (index) {
                     0 -> ProjectScreen(
                         projectScreenUiState = projectScreenViewModel.uiState.collectAsState().value,
-                        onProjectScreenEvent = projectScreenViewModel::onEvent,
-                        markdownEditorUiState = markdownEditorViewModel.uiState.collectAsState().value,
-                        onMarkdownEditorEvent = markdownEditorViewModel::onUiEvent,
+                        onProjectScreenEvent = { projectScreenViewModel.onUiEvent(it) },
+                        markdownEditorUiState = projectScreenViewModel.markdownEditorUiState.collectAsState().value,
+                        onMarkdownEditorEvent = { projectScreenViewModel.onUiEvent(it) },
                         modifier = Modifier.fillMaxSize()
                     )
                     1 -> FormulaScreen(formulaScreenViewModel, Modifier.fillMaxSize())

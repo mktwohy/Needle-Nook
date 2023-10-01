@@ -28,7 +28,9 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
@@ -49,10 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mktwohy.needlenook.ui.composables.VerticalDivider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 fun AnnotatedString.getSpanStyles(start: Int, end: Int): List<AnnotatedString.Range<SpanStyle>> =
     this.spanStyles.filter { start >= it.start && end <= it.end }
@@ -146,61 +150,13 @@ fun TextFieldValue.decreaseSelectedLineIndent(): TextFieldValue {
     ).annotateAsMarkdown()
 }
 
-class MarkdownEditorViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(MarkdownEditorUiState())
-    val uiState = _uiState.asStateFlow()
-
-    fun onUiEvent(event: MarkdownEditorUiEvent) {
-        when (event) {
-            is MarkdownEditorUiEvent.TextFieldValueChange -> {
-                updateTextFieldValue {
-                    event.textFieldValue.annotateAsMarkdown()
-                }
-            }
-            is MarkdownEditorUiEvent.ClickBold -> {
-               updateTextFieldValue {
-                    if (isBoldButtonSelected) {
-                        it.removeMdStyleFromSelection("**")
-                    } else {
-                        it.applyMdStyleToSelection("**")
-                    }
-                }
-            }
-            is MarkdownEditorUiEvent.ClickItalics -> {
-               updateTextFieldValue {
-                    if (isItalicButtonSelected) {
-                        it.removeMdStyleFromSelection("*")
-                    } else {
-                       it.applyMdStyleToSelection("*")
-                    }
-                }
-            }
-            is MarkdownEditorUiEvent.ClickIncreaseIndent -> {
-               updateTextFieldValue { it.increaseSelectedLineIndent() }
-            }
-            is MarkdownEditorUiEvent.ClickDecreaseIndent -> {
-                updateTextFieldValue {
-                    it.decreaseSelectedLineIndent()
-                }
-            }
-        }
-    }
-
-    private fun updateTextFieldValue(transform: MarkdownEditorUiState.(TextFieldValue) -> TextFieldValue) {
-        viewModelScope.launch {
-            _uiState.update { uiState ->
-                uiState.copy(textFieldValue = uiState.transform(uiState.textFieldValue))
-            }
-        }
-    }
-}
-
 sealed class MarkdownEditorUiEvent {
     data class TextFieldValueChange(val textFieldValue: TextFieldValue) : MarkdownEditorUiEvent()
     data object ClickBold : MarkdownEditorUiEvent()
     data object ClickItalics : MarkdownEditorUiEvent()
     data object ClickIncreaseIndent : MarkdownEditorUiEvent()
     data object ClickDecreaseIndent : MarkdownEditorUiEvent()
+    data object Save : MarkdownEditorUiEvent()
 }
 
 data class MarkdownEditorUiState(val textFieldValue: TextFieldValue = TextFieldValue()) {
@@ -221,6 +177,11 @@ fun MarkdownEditor(
         shape = shape,
         tonalElevation = 4.dp,
         modifier = modifier
+            .onFocusChanged { focusState ->
+                if (!focusState.hasFocus) {
+                    onEvent(MarkdownEditorUiEvent.Save)
+                }
+            }
     ) {
         Column(Modifier.padding(8.dp)) {
             MarkdownEditorButtonRow(
@@ -297,26 +258,6 @@ private fun MarkdownEditorButtonRow(
 }
 
 @Composable
-fun VerticalDivider(
-    modifier: Modifier = Modifier,
-    thickness: Dp = DividerDefaults.Thickness,
-    color: Color = DividerDefaults.color,
-) {
-    val targetThickness = if (thickness == Dp.Hairline) {
-        (1f / LocalDensity.current.density).dp
-    } else {
-        thickness
-    }
-
-    Box(
-        modifier
-            .fillMaxHeight()
-            .width(targetThickness)
-            .background(color)
-    )
-}
-
-@Composable
 private fun MarkdownEditorStyleButton(
     onClick: () -> Unit,
     icon: ImageVector,
@@ -332,40 +273,5 @@ private fun MarkdownEditorStyleButton(
         )
     ) {
         Icon(imageVector = icon, contentDescription = icon.name)
-    }
-}
-
-@Preview
-@Composable
-private fun MarkdownEditorPreview() {
-    val viewModel = viewModel<MarkdownEditorViewModel>()
-    val uiState by viewModel.uiState.collectAsState()
-
-    viewModel.onUiEvent(
-        MarkdownEditorUiEvent.TextFieldValueChange(
-            TextFieldValue(
-                """
-                    ## Header 2
-                    Plain Text
-                    - *Italics*
-                    - **Bold**
-                      1. ***Bold and Italics***
-                      2. `code`
-                """.trimIndent()
-            )
-        )
-    )
-
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        MarkdownEditor(
-            uiState = uiState,
-            onEvent = viewModel::onUiEvent,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f)
-        )
     }
 }
