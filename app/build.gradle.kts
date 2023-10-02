@@ -1,11 +1,11 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
     id("com.google.devtools.ksp")
 }
 
 android {
-    namespace "com.mktwohy.needlenook"
+    namespace = "com.mktwohy.needlenook"
     compileSdk = 34
 
     defaultConfig {
@@ -16,16 +16,16 @@ android {
         versionName = "0.3.0"
         setProperty("archivesBaseName", "needlenook-v$versionName")
 
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
     }
 
     buildTypes {
-        release {
-            minifyEnabled = true
-            debuggable = false
+        getByName("release") {
+            isMinifyEnabled = true
+            isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -44,7 +44,7 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            exclude("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
 }
@@ -62,9 +62,10 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.3")
     
     // Jetpack Compose
+    val composeUiVersion = "1.5.1"
     implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.compose.ui:ui:$compose_ui_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
+    implementation("androidx.compose.ui:ui:$composeUiVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
 
     // Material Design
     implementation("androidx.compose.material3:material3:1.1.1")
@@ -82,16 +83,16 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // Compose Testing
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeUiVersion")
+    debugImplementation("androidx.compose.ui:ui-tooling:$composeUiVersion")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
 
     // Room
-    def roomVersion = "2.5.2"
+    val roomVersion = "2.5.2"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
-    annotationProcessor "androidx.room:room-compiler:$roomVersion"
-    ksp "androidx.room:room-compiler:$roomVersion"
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Markdown
     implementation("org.jetbrains:markdown:0.5.0")
