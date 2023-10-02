@@ -53,6 +53,8 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
+val ktlint by configurations.creating
+
 dependencies {
 
     // AndroidX
@@ -73,6 +75,9 @@ dependencies {
 
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
+
+    // ktlint
+    ktlint("com.pinterest:ktlint:0.49.1")
 
     // Shared Preferences
     implementation("androidx.preference:preference-ktx:1.2.1")
@@ -96,4 +101,36 @@ dependencies {
 
     // Markdown
     implementation("org.jetbrains:markdown:0.5.0")
+}
+
+val ktlintCheck = tasks.register<JavaExec>("ktlintCheck") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Check Kotlin code style"
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
+    args(
+        "**/src/**/*.kt",
+        "**.kts",
+        "!**/build/**",
+    )
+}
+
+tasks.check {
+    dependsOn(ktlintCheck)
+}
+
+tasks.register<JavaExec>("ktlintFormat") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Check Kotlin code style and format"
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
+    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
+    args(
+        "-F",
+        "**/src/**/*.kt",
+        "**.kts",
+        "!**/build/**",
+    )
 }
