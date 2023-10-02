@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Needle Nook"
-include ':app'
+include ":app"
