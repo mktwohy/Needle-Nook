@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.devtools.ksp")
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
 }
 
 android {
@@ -60,6 +60,7 @@ ktlint {
         "trailing-comma-on-call-site",
         "trailing-comma-on-declaration-site"
     )
+    version.set("0.48.0")
 }
 
 dependencies {
@@ -82,9 +83,6 @@ dependencies {
 
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
-
-    // ktlint
-//    ktlint("com.pinterest:ktlint:0.49.1")
 
     // Shared Preferences
     implementation("androidx.preference:preference-ktx:1.2.1")
