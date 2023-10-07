@@ -7,7 +7,6 @@ import androidx.compose.material.icons.outlined.Calculate
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
-
 sealed class Screen(
     val route: String,
     val title: String,

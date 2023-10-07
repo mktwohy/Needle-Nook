@@ -62,13 +62,13 @@ fun StitchCounter(
             modifier = Modifier
                 .background(
                     color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = ButtonDefaults.filledTonalShape)
+                    shape = ButtonDefaults.filledTonalShape
+                )
                 .height(ButtonDefaults.MinHeight)
         ) {
             Text("Reset")
         }
     }
-
 }
 
 @Composable
@@ -127,7 +127,12 @@ private fun Counter(
     }
 }
 
-@Preview(name = "Dark Theme", showBackground = true, device = Devices.PIXEL_3A, uiMode = UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Dark Theme",
+    showBackground = true,
+    device = Devices.PIXEL_3A,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Preview(name = "Light Theme", showBackground = true, device = Devices.PIXEL_3A)
 @Composable
 private fun StitchCounterPreview() {

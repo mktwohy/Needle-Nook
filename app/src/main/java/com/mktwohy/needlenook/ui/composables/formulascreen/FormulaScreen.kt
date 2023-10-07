@@ -8,8 +8,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
 import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
+import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
 
 @Composable
 fun FormulaScreen(viewModel: FormulaScreenViewModel, modifier: Modifier = Modifier) {

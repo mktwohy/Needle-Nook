@@ -27,7 +27,10 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isDebuggable = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -70,7 +73,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.navigation:navigation-compose:2.7.3")
-    
+
     // Jetpack Compose
     val composeUiVersion = "1.5.1"
     implementation("androidx.activity:activity-compose:1.7.2")
@@ -86,7 +89,7 @@ dependencies {
 
     // Shared Preferences
     implementation("androidx.preference:preference-ktx:1.2.1")
-    
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -108,7 +111,7 @@ dependencies {
     implementation("org.jetbrains:markdown:0.5.0")
 }
 
-//val ktlintCheck = tasks.register<JavaExec>("ktlintCheck") {
+// val ktlintCheck = tasks.register<JavaExec>("ktlintCheck") {
 //    group = LifecycleBasePlugin.VERIFICATION_GROUP
 //    description = "Check Kotlin code style"
 //    classpath = ktlint
@@ -119,13 +122,13 @@ dependencies {
 //        "**.kts",
 //        "!**/build/**",
 //    )
-//}
+// }
 //
-//tasks.check {
+// tasks.check {
 //    dependsOn(ktlintCheck)
-//}
+// }
 //
-//tasks.register<JavaExec>("ktlintFormat") {
+// tasks.register<JavaExec>("ktlintFormat") {
 //    group = LifecycleBasePlugin.VERIFICATION_GROUP
 //    description = "Check Kotlin code style and format"
 //    classpath = ktlint
@@ -138,4 +141,4 @@ dependencies {
 //        "**.kts",
 //        "!**/build/**",
 //    )
-//}
+// }

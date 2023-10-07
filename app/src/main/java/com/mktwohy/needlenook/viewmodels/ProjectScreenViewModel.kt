@@ -17,21 +17,19 @@ import com.mktwohy.needlenook.ui.composables.projectscreen.applyMdStyleToSelecti
 import com.mktwohy.needlenook.ui.composables.projectscreen.decreaseSelectedLineIndent
 import com.mktwohy.needlenook.ui.composables.projectscreen.increaseSelectedLineIndent
 import com.mktwohy.needlenook.ui.composables.projectscreen.removeMdStyleFromSelection
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.time.Duration.Companion.seconds
 
 class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
     companion object {
@@ -117,7 +115,9 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
         }
     }
 
-    private fun updateTextFieldValue(transform: MarkdownEditorUiState.(TextFieldValue) -> TextFieldValue) {
+    private fun updateTextFieldValue(
+        transform: MarkdownEditorUiState.(TextFieldValue) -> TextFieldValue
+    ) {
         viewModelScope.launch {
             _markdownEditorUiState.update { uiState ->
                 uiState.copy(textFieldValue = uiState.transform(uiState.textFieldValue))
@@ -168,14 +168,18 @@ class ProjectScreenViewModel(private val dao: ProjectDao) : ViewModel() {
                 viewModelScope.launch(Dispatchers.IO) {
                     val selectedProject = uiState.value.selectedProject
                     checkNotNull(selectedProject)
-                    dao.updateProject(selectedProject.copy(stitchCount = selectedProject.stitchCount + 1))
+                    dao.updateProject(
+                        selectedProject.copy(stitchCount = selectedProject.stitchCount + 1)
+                    )
                 }
             }
             is ProjectScreenUiEvent.DecrementStitchCounter -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     val selectedProject = uiState.value.selectedProject
                     checkNotNull(selectedProject)
-                    dao.updateProject(selectedProject.copy(stitchCount = selectedProject.stitchCount - 1))
+                    dao.updateProject(
+                        selectedProject.copy(stitchCount = selectedProject.stitchCount - 1)
+                    )
                 }
             }
             is ProjectScreenUiEvent.ResetStitchCounter -> {

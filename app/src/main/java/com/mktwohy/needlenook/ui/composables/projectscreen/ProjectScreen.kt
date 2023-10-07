@@ -32,11 +32,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mktwohy.needlenook.ui.composables.AlertDialog
+import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import com.mktwohy.needlenook.viewmodels.ProjectScreenDialog
 import com.mktwohy.needlenook.viewmodels.ProjectScreenUiEvent
 import com.mktwohy.needlenook.viewmodels.ProjectScreenUiState
-import com.mktwohy.needlenook.ui.composables.AlertDialog
-import com.mktwohy.needlenook.ui.theme.NeedleNookTheme
 import kotlinx.coroutines.android.awaitFrame
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -52,7 +52,9 @@ fun ProjectScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onProjectScreenEvent(ProjectScreenUiEvent.ShowDialog(ProjectScreenDialog.AddProject))
+                    onProjectScreenEvent(
+                        ProjectScreenUiEvent.ShowDialog(ProjectScreenDialog.AddProject)
+                    )
                 },
                 content = {
                     Icon(
@@ -77,8 +79,12 @@ fun ProjectScreen(
             if (selectedProject != null) {
                 StitchCounter(
                     count = selectedProject.stitchCount,
-                    onIncrement = { onProjectScreenEvent(ProjectScreenUiEvent.IncrementStitchCounter) },
-                    onDecrement = { onProjectScreenEvent(ProjectScreenUiEvent.DecrementStitchCounter) },
+                    onIncrement = {
+                        onProjectScreenEvent(ProjectScreenUiEvent.IncrementStitchCounter)
+                    },
+                    onDecrement = {
+                        onProjectScreenEvent(ProjectScreenUiEvent.DecrementStitchCounter)
+                    },
                     onReset = {
                         val dialog = ProjectScreenDialog.ResetDialog
                         onProjectScreenEvent(ProjectScreenUiEvent.ShowDialog(dialog))
@@ -149,7 +155,6 @@ fun ProjectScreen(
             }
         }
         null -> {
-
         }
     }
 }
@@ -171,7 +176,7 @@ fun ProjectDropdownMenu(
         OutlinedTextField(
             readOnly = true,
             value = uiState.selectedProject?.name ?: "",
-            onValueChange = {  },
+            onValueChange = { },
             label = { Text("Selected Project") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)

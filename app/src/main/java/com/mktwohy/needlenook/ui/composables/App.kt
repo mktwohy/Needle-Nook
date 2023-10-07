@@ -1,12 +1,7 @@
 package com.mktwohy.needlenook.ui.composables
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,11 +22,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
-import com.mktwohy.needlenook.viewmodels.ProjectScreenViewModel
 import com.mktwohy.needlenook.ui.composables.formulascreen.FormulaScreen
 import com.mktwohy.needlenook.ui.composables.projectscreen.ProjectScreen
 import com.mktwohy.needlenook.util.extensions.noRippleClickable
+import com.mktwohy.needlenook.viewmodels.FormulaScreenViewModel
+import com.mktwohy.needlenook.viewmodels.ProjectScreenViewModel
 
 @Composable
 fun App(
@@ -65,7 +60,6 @@ fun App(
                                 launchSingleTop = true
                                 // Restore state when reselecting a previously selected item
                                 restoreState = true
-
                             }
                         },
                         label = { Text(screen.title) },
