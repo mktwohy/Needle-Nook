@@ -122,9 +122,9 @@ fun TextFieldValue.decreaseSelectedLineIndent(): TextFieldValue {
         annotatedString = buildAnnotatedString {
             append(textBeforeSelection.slice(0..<selectedLineStartIndex))
             append(
-                textBeforeSelection.slice(selectedLineStartIndex..textBeforeSelection.lastIndex).removePrefix(
-                    " ".repeat(4)
-                )
+                textBeforeSelection
+                    .slice(selectedLineStartIndex..textBeforeSelection.lastIndex)
+                    .removePrefix(" ".repeat(4))
             )
             append(getSelectedText())
             append(textAfterSelection)

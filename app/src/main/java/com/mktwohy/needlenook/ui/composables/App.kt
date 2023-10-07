@@ -65,7 +65,8 @@ fun App(
                         label = { Text(screen.title) },
                         icon = {
                             Icon(
-                                imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
+                                imageVector =
+                                if (selected) screen.selectedIcon else screen.unselectedIcon,
                                 contentDescription = screen.title
                             )
                         }
@@ -96,9 +97,15 @@ fun App(
                 exitTransition = { fadeOut(fadeAnimationSpec) }
             ) {
                 ProjectScreen(
-                    projectScreenUiState = projectScreenViewModel.uiState.collectAsState().value,
+                    projectScreenUiState = projectScreenViewModel
+                        .uiState
+                        .collectAsState()
+                        .value,
                     onProjectScreenEvent = { projectScreenViewModel.onUiEvent(it) },
-                    markdownEditorUiState = projectScreenViewModel.markdownEditorUiState.collectAsState().value,
+                    markdownEditorUiState = projectScreenViewModel
+                        .markdownEditorUiState
+                        .collectAsState()
+                        .value,
                     onMarkdownEditorEvent = { projectScreenViewModel.onUiEvent(it) },
                     modifier = Modifier.fillMaxSize()
                 )
